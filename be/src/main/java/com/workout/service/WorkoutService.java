@@ -1,0 +1,195 @@
+package com.workout.service;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.workout.entity.Exercise;
+import com.workout.entity.ExerciseName;
+import com.workout.entity.Flagged;
+import com.workout.exception.EntityExists;
+import com.workout.mapper.SingleWorkoutMapper;
+import com.workout.mapstruct.WorkoutMapstructMapper;
+import com.workout.model.CalendarEventModel;
+import com.workout.model.CurrentPeriodWorkouts;
+import com.workout.model.DateRange;
+import com.workout.model.ExerciseNameModel;
+import com.workout.model.FavoriteWorkout;
+import com.workout.model.SingleWorkoutModel;
+import com.workout.model.WorkoutModel;
+import com.workout.model.WorkoutsPeriod;
+import com.workout.model.WorkoutsResponse;
+import com.workout.projection.WorkoutCalendarEventProjection;
+import com.workout.projection.WorkoutFullProjection;
+import com.workout.repository.ExerciseNameRepository;
+import com.workout.repository.ExerciseRepository;
+import com.workout.repository.FavoriteRepository;
+import com.workout.repository.FlaggedRepository;
+import com.workout.repository.WorkoutRepository;
+import com.workout.util.StatisticsUtil;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class WorkoutService {
+	private final ExerciseRepository exerciseRepository;
+	private final WorkoutMapstructMapper mapper;
+	private final ExerciseNameRepository nameRepository;
+	private final WorkoutRepository workoutRepository;
+	private final WorkoutResponseBuilderService workoutResponseBuilderService;
+	private final SingleWorkoutMapper singleWorkoutMapper;
+	private final FavoriteRepository favoriteRepository;
+	private final FlaggedRepository flaggedRepository;
+
+	@Transactional
+	public void addWorkout(SingleWorkoutModel payload) {
+		var workout = mapper.toEntity(payload);
+
+		var workoutDate = LocalDate.parse(payload.getDate());
+		if (workoutRepository.existsByDate(workoutDate)) {
+			throw new EntityExists("Workout already is present for: " + payload.getDate());
+		}
+		
+		List<Exercise> exercises = payload.getExercises().stream()
+			.map(exercise -> {
+				var result = new Exercise();
+				result.setName(nameRepository.upsertAndReturnId(exercise.name()));
+				result.setWeight(exercise.weight());
+				result.setWorkout(workout);
+				result.setOrder(exercise.order());
+				return result;
+			})
+			.toList();
+		
+		System.out.println(exercises);
+		
+		if (!exercises.isEmpty())
+			exerciseRepository.saveAll(exercises);
+	}
+	
+	public WorkoutsResponse<? extends WorkoutModel> getWorkoutsPerPeriod(WorkoutsPeriod period) {
+		return workoutResponseBuilderService.generateResponse(period);
+	}
+	
+	public List<ExerciseNameModel> getExcercises(boolean idValue) {
+		List<ExerciseName> exercises = nameRepository.findAll();
+		if (idValue) {
+			return mapper.toNameModelWithId(exercises);
+		} else {
+			return mapper.toNameModel(exercises);
+		}
+	}
+
+	public List<CalendarEventModel> getCalendarEvents(DateRange range) {
+		List<WorkoutCalendarEventProjection> events = workoutRepository.getCalendarEventProjections(
+			range.startDate(), range.endDate());
+		return mapper.toCalendarEvents(events);
+	}
+
+	public List<SingleWorkoutModel> searchWorkouts(String name, String weight, String calories) {
+		List<WorkoutFullProjection> events = workoutRepository.searchWorkouts(
+			StringUtils.hasText(name) && !"null".equals(name) ? UUID.fromString(name) : null,
+			StringUtils.hasText(weight) ? Integer.parseInt(weight) : null,
+			StringUtils.hasText(calories) ? Integer.parseInt(calories) : null
+		);
+		return singleWorkoutMapper.toModels(events);
+	}
+
+	public CurrentPeriodWorkouts getCurrentPeriodWorkouts() {
+		LocalDate today = LocalDate.now();
+        LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+
+		List<WorkoutCalendarEventProjection> events = workoutRepository.getCalendarEventProjections(
+				startOfWeek, today);
+		
+		WeekFields wf = WeekFields.of(DayOfWeek.MONDAY, 7); // Choose Monday as start of the week
+		// End of previous week (Sunday)
+		LocalDate endOfPrevWeek = today.with(wf.dayOfWeek(), 1).minusDays(1);
+
+		// Start of previous week (Monday)
+		LocalDate startOfPrevWeek = endOfPrevWeek.minusDays(6);
+		List<WorkoutCalendarEventProjection> prevWeekEvents = workoutRepository.getCalendarEventProjections(
+				startOfPrevWeek, endOfPrevWeek);
+		int monthCalories = workoutRepository.getCurrentMonthCalories();
+		return new CurrentPeriodWorkouts(mapper.toCalendarEvents(events),
+				mapper.toCalendarEvents(prevWeekEvents),
+				StatisticsUtil.calculateFrom(events), monthCalories);
+	}
+
+	public String getFirstWorkoutDate() {
+		LocalDate firstWorkoutDate = workoutRepository.findFirstWorkoutDate();
+		return firstWorkoutDate.toString();
+	}
+
+	public void addOrRemoveFavorite(String workout) {
+		try {
+			favoriteRepository.addOrRemove(UUID.fromString(workout));
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+
+	public List<FavoriteWorkout> getFavoriteIds() {
+		return mapper.toFavoriteModels(favoriteRepository.findAll());
+	}
+	
+	public List<SingleWorkoutModel> getFavoriteWorkouts() {
+		List<WorkoutFullProjection> workouts
+			= exerciseRepository.findFavoriteWorkouts();
+		Map<LocalDate, Integer> orderMap = new HashMap<>();
+		for (int i = 0; i < workouts.size(); i++) {
+			orderMap.put(workouts.get(i).getDate(), i);
+		}
+		List<SingleWorkoutModel> models = singleWorkoutMapper.toModels(workouts);
+		models.sort(Comparator.comparingInt(e -> orderMap.get(LocalDate.parse(e.getDate()))));
+		return models;
+	}
+
+	public SingleWorkoutModel getWorkout(String date) {
+		List<WorkoutFullProjection> workout = exerciseRepository.findWorkout(LocalDate.parse(date));
+		List<SingleWorkoutModel> models = singleWorkoutMapper.toModels(workout);
+		return models.stream().findFirst().orElseThrow();
+	}
+
+	public List<String> upsertFlagged(String date) {
+		List<Flagged> flagged = flaggedRepository.findAll();
+		List<String> flaggedDays = flagged.stream()
+			.map(Flagged::getDay)
+			.toList();
+
+		if (date != null) {
+			boolean saved = upsertFlagged(flaggedDays, date);
+			if (saved) {
+				flaggedDays.add(date);
+			} else {
+				flaggedDays.remove(date);
+			}	
+		}
+
+		flaggedDays.sort(Comparator.naturalOrder());
+		return flaggedDays;
+	}
+
+	private boolean upsertFlagged(List<String> flaggedDays, String date) {
+		if (flaggedDays.contains(date)) {
+			flaggedRepository.delete(date);
+			return false;
+		} else {
+			Flagged flaggedDay = new Flagged();
+			flaggedDay.setDay(date);
+			flaggedRepository.save(flaggedDay);
+			return true;
+		}
+	}
+}
