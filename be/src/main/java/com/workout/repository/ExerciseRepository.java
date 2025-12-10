@@ -68,6 +68,23 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 		ORDER BY f.fav_order desc
 	""", nativeQuery = true)
 	List<WorkoutFullProjection> findFavoriteWorkouts();
+
+	@Query(value = """
+		SELECT w.id as id, w.date as date,
+			w.exercise_time as exerciseTime,
+		    w.calories as calories, w.puls as puls,
+		    w.puls_max as maxPuls, w.intensive as intensive,
+		    w.aero as aerobish, anaero as anaerobish,
+			w.tl as trainingLoad, w.rounds as rounds,
+			w.comment as comment, e.weight as weight,
+			e.ex_order as order, n.value as name
+		FROM exercise e
+		LEFT JOIN workout w on e.workout_id = w.id
+		LEFT JOIN exercise_name n on e.name = n.id
+		RIGHT JOIN flagged f on (CAST(f.day AS DATE) + INTERVAL '1 day') = w.date
+		ORDER BY w.date
+	""", nativeQuery = true)
+	List<WorkoutFullProjection> findFlaggedWorkouts();
 	
 	@Query(value = """
 		SELECT w.id as id, w.date as date,

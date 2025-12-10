@@ -35,8 +35,7 @@ export default function WorkoutCalendar() {
 
 	function renderDayCell(arg) {
 		const dateStr = arg.date.toISOString().split('T')[0]
-		
-		if (flaggedDays[dateStr]) {
+		if (flaggedDays.includes(dateStr)) {
 			return (
 				<div>
 					<div
@@ -58,7 +57,7 @@ export default function WorkoutCalendar() {
 				className="flex items-center cursor-pointer group"
 				onClick={() => dayClickHandler(dateStr)}
 			>
-				<span className={`text-red-500 mr-2 ${flaggedDays[dateStr] ? '' : 'hidden group-hover:inline'}`}>
+				<span className={`text-yellow-500 mr-2 ${flaggedDays[dateStr] ? '' : 'hidden group-hover:inline'}`}>
 					<BsFlagFill />
 				</span>
 				<span>
@@ -72,11 +71,11 @@ export default function WorkoutCalendar() {
 		sendFlaggedDayRequest()
 	}, [])
 
-	const { startDate, endDate, events, calendarError } = calendarState
+	const { startDate: startCalendarDate, endDate: endCalendarDate, events, calendarError } = calendarState
 	const handleDataSet = (arg) => {
 		let startDateArg = arg.startStr.split('T')[0]
 		let endDateArg = arg.endStr.split('T')[0]
-		if (startDate === startDateArg && endDate === endDateArg) {
+		if (startCalendarDate === startDateArg && endCalendarDate === endDateArg) {
 			return
 		}
 		fetchEvents(startDateArg, endDateArg)
@@ -93,9 +92,9 @@ export default function WorkoutCalendar() {
 	}))
 
 	return (
-	  <div className="flex-none h-[32rem] w-[32rem] mt-6">
+		<div className="flex-none h-[32rem] w-[32rem] mt-6">
 			<FullCalendar
-			  plugins={[dayGridPlugin]}
+				plugins={[dayGridPlugin]}
 				initialView="dayGridMonth"
 				height="100%"
 				firstDay={1}

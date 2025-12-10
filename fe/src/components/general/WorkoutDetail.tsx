@@ -1,9 +1,7 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import WorkoutSnapshot from './WorkoutSnapshot'
 import { Tooltip as ReactTooltip } from "react-tooltip"
 import WorkoutTooltipContent from './WorkoutTooltipContent'
-
-const requestConfig = {}
 
 export default function WorkoutDetail({
 	workouts,

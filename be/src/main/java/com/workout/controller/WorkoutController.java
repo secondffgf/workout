@@ -142,6 +142,11 @@ public class WorkoutController {
 	public List<String> addFlaggedDay(@RequestBody(required = false) String flaggedDay) {
 		return workoutService.upsertFlagged(flaggedDay);
 	}
+
+	@GetMapping("/flagged")
+	public List<SingleWorkoutModel> getFlaggedDays() {
+		return workoutService.getFlaggedDays();
+	}
 	
 	@ExceptionHandler
 	public ResponseEntity<Map<String, String>> handleException(NoSuchElementException exception) {

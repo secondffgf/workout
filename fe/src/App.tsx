@@ -19,6 +19,7 @@ import { CalendarContextProvider } from '@/context/CalendarContextProvider'
 import { FirstWorkoutContextProvider } from '@/context/FirstWorkoutContextProvider'
 import { CurrentPeriodContextProvider } from '@/context/CurrentPeriodContextProvider'
 import ProgressBar from 'components/general/UI/chart/ProgressBar'
+import Flagged from './pages/Flagged'
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
 						<Route path="/all" element={<AllContent />} />
 						<Route path="/search" element={<SearchAndCompare />} />
 						<Route path="/favorite" element={<Favorite />} />
+						<Route path="/flagged" element={<Flagged />} />
 					</Routes>
 				</Router>
 				<div className="ml-8">

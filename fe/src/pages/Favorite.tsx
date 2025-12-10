@@ -12,7 +12,6 @@ export default function Favorite() {
 	const [rightWorkout, setRightWorkout] = useState()
 	const {
 		data: favorites,
-		error: favoritesError,
 		sendRequest
 	} = useHttp(
 		`${BASE_URL_DEVELOPMENT}/favorites`,

@@ -4,6 +4,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -147,6 +149,10 @@ public class WorkoutService {
 	public List<SingleWorkoutModel> getFavoriteWorkouts() {
 		List<WorkoutFullProjection> workouts
 			= exerciseRepository.findFavoriteWorkouts();
+		return convertWorkoutProjections(workouts);
+	}
+
+	private List<SingleWorkoutModel> convertWorkoutProjections(List<WorkoutFullProjection> workouts) {
 		Map<LocalDate, Integer> orderMap = new HashMap<>();
 		for (int i = 0; i < workouts.size(); i++) {
 			orderMap.put(workouts.get(i).getDate(), i);
@@ -167,18 +173,19 @@ public class WorkoutService {
 		List<String> flaggedDays = flagged.stream()
 			.map(Flagged::getDay)
 			.toList();
+		List<String> modifiableList = new ArrayList<>(flaggedDays);
 
 		if (date != null) {
 			boolean saved = upsertFlagged(flaggedDays, date);
 			if (saved) {
-				flaggedDays.add(date);
+				modifiableList.add(date);
 			} else {
-				flaggedDays.remove(date);
+				modifiableList.remove(date);
 			}	
 		}
 
-		flaggedDays.sort(Comparator.naturalOrder());
-		return flaggedDays;
+		Collections.sort(modifiableList);
+		return modifiableList;
 	}
 
 	private boolean upsertFlagged(List<String> flaggedDays, String date) {
@@ -192,4 +199,10 @@ public class WorkoutService {
 			return true;
 		}
 	}
+
+    public List<SingleWorkoutModel> getFlaggedDays() {
+		List<WorkoutFullProjection> workouts
+			= exerciseRepository.findFlaggedWorkouts();
+        return convertWorkoutProjections(workouts);
+    }
 }

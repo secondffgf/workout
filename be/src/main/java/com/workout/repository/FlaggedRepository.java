@@ -14,7 +14,7 @@ public interface FlaggedRepository extends JpaRepository<Flagged, UUID> {
     @Transactional
     @Query(value = """
         DELETE FROM flagged
-        WHERE day = date;        
-    """)
+        WHERE day = :date       
+    """, nativeQuery = true)
     void delete(String date);
 }

@@ -19,7 +19,8 @@ import {
 	MdImageSearch,
 	MdFavoriteBorder,
 	MdOutlineAdminPanelSettings,
-	MdOutlineBookmarkAdd
+	MdOutlineBookmarkAdd,
+	MdOutlineFlag
  } from "react-icons/md"
 import RightSidePanel from './general/RightSidePanel'
 import Modal from 'components/general/UI/Modal'
@@ -150,14 +151,14 @@ export default function ProjectSidebar() {
 						/>
 				</div>
 				<hr />
-				<div className="mt-4 mb-16 flex flex-col text-lg text-white w-full gap-2 pt-2">
+				<div className="mt-4 mb-16 flex flex-col text-lg text-white w-full gap-2 pt-2 min-w-[200px]">
 					<NavLink
 					  to="/search"
 						className="flex space-x-2 items-center"
 						children={({isActive}) => (
 							<>
 								<MdImageSearch />
-								<span>Search and Compare</span>
+								<span>Search & Compare</span>
 								{isActive ? <TiTickOutline /> : null}
 							</>
 						)}
@@ -169,6 +170,17 @@ export default function ProjectSidebar() {
 							<>
 								<MdFavoriteBorder />
 								<span>Favorite Workouts</span>
+								{isActive ? <TiTickOutline /> : null}
+							</>
+						)}
+					/>
+					<NavLink
+					  to="/flagged"
+						className="flex space-x-2 items-center"
+						children={({isActive}) => (
+							<>
+								<MdOutlineFlag />
+								<span>Flagged Workouts</span>
 								{isActive ? <TiTickOutline /> : null}
 							</>
 						)}

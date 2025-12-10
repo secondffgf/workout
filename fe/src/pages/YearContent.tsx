@@ -9,6 +9,7 @@ import WorkoutContent from 'components/dashboard/WorkoutContent'
 import { FirstWorkoutContext } from '@/context/FirstWorkoutContextProvider'
 import useHttp from '@/hooks/useHttp'
 import { BASE_URL_DEVELOPMENT } from '@/constants.js'
+import IndexLineChart from 'components/general/UI/chart/IndexLineChart'
 
 const now = new Date();
 const year = now.getFullYear();
@@ -42,7 +43,6 @@ export default function YearContent() {
 	const [selectedBar, setSelectedBar] = useState(null)
 	const {
 		data: workouts,
-		isLoading,
 		error: workoutsError,
 		sendRequest
 	} = useHttp(
@@ -106,6 +106,9 @@ export default function YearContent() {
 					ticks={caloriesTicks}
 					dataKey="calories"
 				/>
+			</div>
+			<div className="w-full mt-8">
+				<IndexLineChart />
 			</div>
 		</WorkoutContent>
 	)
