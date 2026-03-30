@@ -1,4 +1,3 @@
-import { useState  } from 'react'
 import ProjectSidebar from './components/ProjectSidebar'
 import NewWorkout from './pages/NewWorkout'
 import {
@@ -27,8 +26,12 @@ function App() {
 			<CalendarContextProvider>
 		  <CurrentPeriodContextProvider>
 			<FirstWorkoutContextProvider>
+				<div className="flex flex-row w-full">
 				<Router>
+					<div className="">
 					<ProjectSidebar />
+					</div>
+					<div className="h-[95vh] overflow-y-auto">
 					<Routes>
 						<Route path="/" element={<Navigate to="/month" />} />
 						<Route path="/week" element={<WeekContent />} />
@@ -40,11 +43,13 @@ function App() {
 						<Route path="/favorite" element={<Favorite />} />
 						<Route path="/flagged" element={<Flagged />} />
 					</Routes>
+					</div>
 				</Router>
-				<div className="ml-8">
+				<div className="ml-8 overflow-y-auto">
 					<WorkoutCalendar />
 					<CaloriesEstimateChart />
 					<ProgressBar />
+				</div>
 				</div>
 			</FirstWorkoutContextProvider>
 			</CurrentPeriodContextProvider>

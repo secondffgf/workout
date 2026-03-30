@@ -17,6 +17,12 @@ repositories {
 	mavenCentral()
 }
 
+configurations.all {
+    exclude group: "commons-logging", module: "commons-logging"
+    exclude group: "org.apache.logging.log4j"
+    exclude group: "org.slf4j", module: "slf4j-simple"
+}
+
 dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

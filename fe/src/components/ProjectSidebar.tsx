@@ -98,7 +98,7 @@ export default function ProjectSidebar() {
 		  open={isOpenPanel}
 		  setOpen={setIsOpenPanel}
 		/>
-		<div className="w-fit px-6 py-8 bg-sky-600 text-sky-50 rounded-r-xl flex flex-col justify-between mr-4">
+		<div className="w-fit px-6 py-8 bg-sky-600 text-sky-50 rounded-r-xl flex flex-col my-auto mr-4 h-[90vh] z-10">
 			<div className="px-2 flex-shrink-0">
 				<h2 className="font-bold uppercase md:text-xl text-sky-200 flex items-center space-x-2">
 					<GrOverview />
