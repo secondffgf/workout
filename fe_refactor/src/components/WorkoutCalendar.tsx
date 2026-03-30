@@ -88,7 +88,7 @@ const WorkoutCalendar = () => {
 			<div
 				className="flex items-center cursor-pointer group"
 				onClick={() => dayClickHandler(dateStr)}
-			>
+			>	
 				<span className={`text-yellow-500 mr-2 ${flaggedDays.includes(dateStr) ? '' : 'hidden group-hover:inline'}`}>
 					<BsFlagFill />
 				</span>
@@ -99,25 +99,25 @@ const WorkoutCalendar = () => {
 		)
 	}
 
-  return (
-    <div className="flex-none h-[29rem] w-[30rem] mt-6">
-      <FullCalendar
-        plugins={[dayGridPlugin]}
-        initialView="dayGridMonth"
-        height="100%"
-        firstDay={1}
-        events={calendarData}
-        dayCellContent={renderDayCell}
-        eventColor="#74d4ff"
-        validRange={{
-          start: firstWorkout
-        }}
-        eventDidMount={(info) => {
-          info.el.setAttribute('title', info.event.extendedProps.description || '');
-        }}
-        datesSet={handleDataSet}
-      />
-    </div>
+	return (
+		<div className="flex-none w-[30rem] mt-6">
+			<FullCalendar
+				plugins={[dayGridPlugin]}
+				initialView="dayGridMonth"
+				height="auto"
+				firstDay={1}
+				events={calendarData}
+				dayCellContent={renderDayCell}
+				eventColor="#74d4ff"
+				validRange={{
+				start: firstWorkout
+				}}
+				eventDidMount={(info) => {
+				info.el.setAttribute('title', info.event.extendedProps.description || '');
+				}}
+				datesSet={handleDataSet}
+			/>
+		</div>
   );
 };
 

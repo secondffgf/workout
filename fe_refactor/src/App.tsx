@@ -1,12 +1,12 @@
 import { Outlet } from 'react-router-dom';
 import NavigationSidebar from './components/NavigationSidebar';
 import WorkoutCalendar from './components/WorkoutCalendar';
-import CaloriesEstimateChart from './components/CaloriesEstimateChart';
+import CaloriesEstimateChart from './components/general/UI/chart/CaloriesEstimateChart';
 import ProgressBar from '@/components/ProgressBar'
 import { CalendarContextProvider } from '@/context/CalendarContextProvider';
 import { FirstWorkoutContextProvider } from '@/context/FirstWorkoutContextProvider';
 import { CurrentPeriodContextProvider } from '@/context/CurrentPeriodContextProvider';
-import Badge from '@/components/general/Badge';
+import Badge from '@/components/general/UI/Badge';
 
 function App() {
   return (
