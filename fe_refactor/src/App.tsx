@@ -17,7 +17,7 @@ function App() {
 			<div className="flex-shrink-0 flex items-center">
 				<NavigationSidebar />
 			</div>
-			<div className="flex-1 h-auto w-[40rem] relative">
+			<div className="flex-1 h-auto w-[40rem] relative mr-4">
 				<Outlet />
 				<div className="absolute top-0 right-6">
 					<Badge />

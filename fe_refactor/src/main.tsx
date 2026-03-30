@@ -25,6 +25,7 @@ const router = createBrowserRouter([
       },
       { path: 'week', element: <WeekPage /> },
       { path: 'year', element: <YearPage /> },
+      { path: 'month', element: <MonthPage /> },
       { path: 'all', element: <AllPage /> },
       { path: 'favorite', element: <Favorite /> },
       { path: 'flagged', element: <Flagged /> },

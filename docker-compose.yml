@@ -11,29 +11,29 @@ services:
       - SPRING_DATASOURCE_PASSWORD=mypass
       - SPRING_PROFILES_ACTIVE=prod
 
-  fe_desktop:
-    image: "node:latest"
-    user: "node"
-    working_dir: /home/node/app
-    environment:
-      - NODE_ENV=development
-    volumes:
-      - ./fe:/home/node/app
-    command: "npm run dev -- --host"
-    depends_on:
-      - be
+#  fe_desktop:
+#    image: "node:latest"
+#    user: "node"
+#    working_dir: /home/node/app
+#    environment:
+#      - NODE_ENV=development
+#    volumes:
+#      - ./fe:/home/node/app
+#    command: "npm run dev -- --host"
+#    depends_on:
+#      - be
 
-  fe_mobile:
-    image: "node:latest"
-    user: "node"
-    working_dir: /home/node/app
-    environment:
-      - NODE_ENV=development
-    volumes:
-      - ./fe_mobile:/home/node/app
-    command: "npm run dev -- --host"
-    depends_on:
-      - be
+#  fe_mobile:
+#    image: "node:latest"
+#    user: "node"
+#    working_dir: /home/node/app
+#    environment:
+#      - NODE_ENV=development
+#    volumes:
+#      - ./fe_mobile:/home/node/app
+#    command: "npm run dev -- --host"
+#    depends_on:
+#      - be
 
   fe_refactored:
     image: "node:latest"

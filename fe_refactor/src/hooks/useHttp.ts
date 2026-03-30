@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 
-async function sendHttpRequest(url, config) {
+async function sendHttpRequest(url: string, config: RequestInit) {
 	const response = await fetch(url, config)
 
 	const resData = await response.json()
@@ -12,9 +12,9 @@ async function sendHttpRequest(url, config) {
 	return resData
 }
 
-export default function useHttp(url, config, initialData) {
-	const [data, setData] = useState(initialData)
-	const [error, setError] = useState()
+export default function useHttp<T>(url: string, config: RequestInit, initialData: T) {
+	const [data, setData] = useState<T>(initialData)
+	const [error, setError] = useState<string | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
 
 	function clearData() {
@@ -22,13 +22,13 @@ export default function useHttp(url, config, initialData) {
 	}
 
 	const sendRequest = useCallback(
-		async function sendRequest(data) {
+		async function sendRequest(data: any | null = null) {
 			setIsLoading(true)
 			try {
 				const resData = await sendHttpRequest(url, { ...config, body: data})
 				setData(resData)
-			} catch(error) {
-				setError(error.messgae || 'Something went wrong')
+			} catch(error: any) {
+				setError(error.message || 'Something went wrong')
 			}
 			setIsLoading(false)
 		}, [url, config])
