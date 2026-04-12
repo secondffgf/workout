@@ -12,7 +12,7 @@ type CurrentPeriodState = {
 }
 
 const ProgressBar = () => {
-  const { state }: { state: CurrentPeriodState } = useContext(CurrentPeriodContext);
+  const { state } = useContext(CurrentPeriodContext) as { state: CurrentPeriodState };
   const percentage = Math.round(state.monthCalories / 7700 * 100)
 
   return (

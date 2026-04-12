@@ -53,12 +53,12 @@ export default function NavigationSidebar() {
 			<div className="flex flex-col mb-6 pl-6 gap-2 pt-4 text-lg text-white">
 				<NavLink
 					to="/week"
-					className="flex items-center space-x-2 text-red-500"
+					className="flex items-center space-x-2"
 					children={({isActive}) => (
 						<>
-							<MdOutlineCalendarViewWeek className="text-white hover:text-sky-200" />
-							<span className="text-white hover:text-sky-200">Week</span>
-							{isActive ? <TiTickOutline className="text-white hover:text-sky-200" /> : null}
+							<MdOutlineCalendarViewWeek className="text-red-500" />
+							<span className="text-red-500">Week</span>
+							{isActive ? <TiTickOutline className="text-red-500" /> : null}
 						</>
 					)}
 				/>
@@ -75,23 +75,23 @@ export default function NavigationSidebar() {
 				/>
 				<NavLink
 					to="/year"
-					className="flex items-center space-x-2 text-red-500"
+					className="flex items-center space-x-2"
 					children={({isActive}) => (
 						<>
-							<GiCalendarHalfYear className="text-white hover:text-sky-200" />
-							<span className="text-white hover:text-sky-200">Year</span>
-							{isActive ? <TiTickOutline className="text-white hover:text-sky-200" /> : null}
+							<GiCalendarHalfYear className="text-red-500" />
+							<span className="text-red-500">Year</span>
+							{isActive ? <TiTickOutline className="text-red-500" /> : null}
 						</>
 					)}
 				/>
 				<NavLink
 					to="/all"
-					className="flex items-center space-x-2 text-red-500"
+					className="flex items-center space-x-2"
 					children={({isActive}) => (
 						<>
-							<PiCalendarSlash className="text-white hover:text-sky-200" />
-							<span className="text-white hover:text-sky-200">All</span>
-							{isActive ? <TiTickOutline className="text-white hover:text-sky-200" /> : null}
+							<PiCalendarSlash className="text-red-500" />
+							<span className="text-red-500">All</span>
+							{isActive ? <TiTickOutline className="text-red-500" /> : null}
 						</>
 					)}
 				/>
@@ -100,12 +100,12 @@ export default function NavigationSidebar() {
 			<div className="mt-4 mb-6 flex flex-col text-lg text-white w-full gap-2 pt-2 min-w-[200px]">
 				<NavLink
 					to="/search"
-					className="flex items-center space-x-2 text-red-500"
+					className="flex items-center space-x-2"
 					children={({isActive}) => (
 						<>
-							<MdImageSearch className="text-white hover:text-sky-200" />
-							<span className="text-white hover:text-sky-200">Search & Compare</span>
-							{isActive ? <TiTickOutline className="text-white hover:text-sky-200" /> : null}
+							<MdImageSearch className="text-red-500" />
+							<span className="text-red-500">Search & Compare</span>
+							{isActive ? <TiTickOutline className="text-red-500" /> : null}
 						</>
 					)}
 				/>
@@ -122,12 +122,12 @@ export default function NavigationSidebar() {
 				/>
 				<NavLink
 					to="/flagged"
-					className="flex items-center space-x-2 text-red-500"
+					className="flex items-center space-x-2"
 					children={({isActive}) => (
 						<>
-							<MdOutlineFlag className="text-white hover:text-sky-200" />
-							<span className="text-white hover:text-sky-200">Flagged Workouts</span>
-							{isActive ? <TiTickOutline className="text-white hover:text-sky-200" /> : null}
+							<MdOutlineFlag className="text-red-500" />
+							<span className="text-red-500">Flagged Workouts</span>
+							{isActive ? <TiTickOutline className="text-red-500" /> : null}
 						</>
 					)}
 				/>

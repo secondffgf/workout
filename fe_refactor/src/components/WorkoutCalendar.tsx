@@ -108,8 +108,8 @@ const WorkoutCalendar = () => {
 				firstDay={1}
 				events={calendarData}
 				dayCellContent={renderDayCell}
-				eventColor="#075985"
-				eventTextColor="#f8fafc"
+				eventColor="#0284c7"
+				eventTextColor="#ffffff"
 				validRange={{
 				start: firstWorkout
 				}}

@@ -7,7 +7,8 @@ import {
 	CartesianGrid,
 	Tooltip,
 	Legend,
-	ResponsiveContainer
+	ResponsiveContainer,
+	type DotItemDotProps
 } from 'recharts'
 import { type CurrentPeriodState, CurrentPeriodContext } from '@/context/CurrentPeriodContextProvider'
 
@@ -43,9 +44,9 @@ function darkenHexColor(hex: string, factor = 0.35) {
 const CustomTooltip = ({ active = false, payload = [], label = '' }: { active: boolean; payload: any[]; label: string }) => {
 	if (active && payload && payload.length) {
     const ordered = [...payload].sort((a, b) => {
-      const order = ["goal", "actual"];
-      return order.indexOf(a.dataKey) - order.indexOf(b.dataKey);
-    });
+      const order = ['goal', 'halfGoal', 'previous', 'current']
+      return order.indexOf(a.dataKey) - order.indexOf(b.dataKey)
+    })
 
 		return (
 			<div className="bg-white border rounded p-2 shadow">
@@ -62,7 +63,7 @@ const CustomTooltip = ({ active = false, payload = [], label = '' }: { active: b
 }
 
 const CaloriesEstimateChart = () => {
-  const { state }: { state: CurrentPeriodState } = useContext(CurrentPeriodContext);
+  const { state } = useContext(CurrentPeriodContext) as { state: CurrentPeriodState };
 
   const chartData = [...Array(5)].map((_, i) => {
 		const workoutsPerWeek = i + 3
@@ -84,10 +85,12 @@ const CaloriesEstimateChart = () => {
 				.reduce((aPrev, bPrev) => aPrev + bPrev, 0)
 			averageCaloriesPerWorkoutPrevWeek = Math.round(caloriesSumPrevWeek / workoutsPerWeek)
 		}
+		const goal = estimates[i]
 		const item = {
 			name: `${workoutsPerWeek}`,
-			goal: estimates[i],
-			actual: averageCaloriesPerWorkout,
+			goal,
+			halfGoal: Math.round(goal / 2),
+			current: averageCaloriesPerWorkout,
 			previous: averageCaloriesPerWorkoutPrevWeek
 		}
 		return item
@@ -95,8 +98,16 @@ const CaloriesEstimateChart = () => {
 
 	const highlightIndex = state.currentWeek?.length
 
-  function renderCustomDot(props: { cx: number; cy: number; index: number; fill: string; r: number; stroke: string; key: string; payload: { name: number } }) {
-		const { cx, cy, index } = props
+  function renderCustomDot(props: {
+		cx: number;
+		cy: number;
+		fill: string;
+		r: number;
+		stroke: string;
+		key: string;
+		payload: { name: number };
+	}): React.ReactNode {
+		const { cx, cy } = props
 		let fill = props.fill
 		let r = props.r
 		if (props.payload.name == highlightIndex) {
@@ -108,11 +119,9 @@ const CaloriesEstimateChart = () => {
 		)
 	}
 
-  return (
-    <div className="mt-4 relative pb-2 w-[30rem]">
-			<div className="absolute left-0 text-sm text-gray-600">
-				Kcal per session
-			</div>
+	return (
+	<>
+    	<div className="mt-2 relative pb-2 w-[30rem]">
 			<ResponsiveContainer width="100%" height={240}>
 				<LineChart
 					data={chartData}
@@ -123,7 +132,7 @@ const CaloriesEstimateChart = () => {
 						domain={[0, 800]}
 						ticks={[0, 100, 200, 300, 400, 500, 600, 700, 800]}
 					/>
-					<Tooltip content={<CustomTooltip />} />
+					<Tooltip content={<CustomTooltip active={false} payload={[]} label={''} />} />
 					<Legend
 						layout="horizontal"
 						verticalAlign="top"
@@ -132,34 +141,44 @@ const CaloriesEstimateChart = () => {
 					<Line
 						type="monotone"
 						dataKey="goal"
+						name="Goal"
 						stroke="#C8008C"
 						activeDot={{ r: 5 }}
-						dot={renderCustomDot}
+						dot={(props: DotItemDotProps) => renderCustomDot(props as any)}
 					/>
 					<Line
 						type="monotone"
-						dataKey="actual"
-						stroke="#82ca9d"
+						dataKey="halfGoal"
+						name="Half goal"
+						stroke="#f59e0b"
+						strokeDasharray="4 4"
 						activeDot={{ r: 5 }}
-						dot={renderCustomDot}
+						dot={(props: DotItemDotProps) => renderCustomDot(props as any)}
 					/>
 					<Line
 						type="monotone"
 						dataKey="previous"
+						name="Previous"
 						stroke="#8884d8"
 						activeDot={{ r: 5 }}
-						dot={renderCustomDot}
+						dot={(props: DotItemDotProps) => renderCustomDot(props as any)}
+					/>
+					<Line
+						type="monotone"
+						dataKey="current"
+						name="Current"
+						stroke="#82ca9d"
+						activeDot={{ r: 5 }}
+						dot={(props: DotItemDotProps) => renderCustomDot(props as any)}
 					/>
 				</LineChart>
 			</ResponsiveContainer>
-			<div className="absolute bottom-6 right-1 text-sm text-gray-600">
+			<div className="absolute bottom-0 right-1 text-sm text-gray-600">
 				Workouts per week
 			</div>
-			<div className="text-sm text-gray-600 text-center font-bold mt-2">
-				Calories for current week
-			</div>
 		</div>
-  );
+	</>
+  	);
 };
 
 export default CaloriesEstimateChart;

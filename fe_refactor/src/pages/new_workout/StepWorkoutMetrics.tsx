@@ -9,6 +9,20 @@ type StepWorkoutMetricsProps = {
 };
 
 const StepWorkoutMetrics = ({ formData, updateField }: StepWorkoutMetricsProps) => {
+  const handleTimeChange = (name: "intensive" | "aero" | "anaero", value: string) => {
+    if (/^\d{0,4}$/.test(value.replace(':', '')) || /^\d{1,2}:\d{0,2}$/.test(value)) {
+      const formatted = formatTime(value);
+      updateField(name as keyof NewWorkoutFormData, formatted);
+    }
+  };
+
+  const formatTime = (val: string) => { 
+    const digits = val.replace(/\D/g, '').slice(0, 4);
+    const minutes = digits.slice(0, digits.length - 2) || '0';
+    const seconds = digits.slice(-2).padStart(2, '0');
+    return `${parseInt(minutes, 10)}:${seconds}`;
+  };
+
   return (
     <>
     <div className="grid gap-4 grid-cols-2">
@@ -17,8 +31,8 @@ const StepWorkoutMetrics = ({ formData, updateField }: StepWorkoutMetricsProps) 
         <input
           type="number"
           min={1}
-          value={formData.exerciseTime}
-          onChange={(e) => updateField("exerciseTime", Number(e.target.value))}
+          value={formData.time}
+          onChange={(e) => updateField("time", Number(e.target.value))}
           className="rounded-md border border-slate-300 px-3 py-2 outline-none focus:border-sky-500"
         />
       </label>
@@ -59,10 +73,9 @@ const StepWorkoutMetrics = ({ formData, updateField }: StepWorkoutMetricsProps) 
       <label className="flex flex-col gap-2">
         <span className="text-sm font-medium text-slate-700">Intensive</span>
         <input
-          type="number"
-          min={0}
+          type="text"
           value={formData.intensive}
-          onChange={(e) => updateField("intensive", e.target.value)}
+          onChange={(e) => handleTimeChange("intensive", e.target.value)}
           className="rounded-md border border-slate-300 px-3 py-2 outline-none focus:border-sky-500"
         />
       </label>
@@ -70,10 +83,9 @@ const StepWorkoutMetrics = ({ formData, updateField }: StepWorkoutMetricsProps) 
       <label className="flex flex-col gap-2">
         <span className="text-sm font-medium text-slate-700">Aero</span>
         <input
-          type="number"
-          min={0}
+          type="text"
           value={formData.aero}
-          onChange={(e) => updateField("aero", e.target.value)}
+          onChange={(e) => handleTimeChange("aero", e.target.value)}
           className="rounded-md border border-slate-300 px-3 py-2 outline-none focus:border-sky-500"
         />
       </label>
@@ -81,10 +93,9 @@ const StepWorkoutMetrics = ({ formData, updateField }: StepWorkoutMetricsProps) 
       <label className="flex flex-col gap-2">
         <span className="text-sm font-medium text-slate-700">Anaero</span>
         <input
-          type="number"
-          min={0}
+          type="text"
           value={formData.anaero}
-          onChange={(e) => updateField("anaero", e.target.value)}
+          onChange={(e) => handleTimeChange("anaero", e.target.value)}
           className="rounded-md border border-slate-300 px-3 py-2 outline-none focus:border-sky-500"
         />
       </label>

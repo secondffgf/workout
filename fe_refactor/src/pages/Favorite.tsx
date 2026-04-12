@@ -26,7 +26,7 @@ const Favorite = () => {
   }
 
   return (
-    <div>
+    <div className="mx-16">
       <div className="w-full mt-14 pr-2">
         <WorkoutDetail
           workouts={favorites}

@@ -1,6 +1,16 @@
+/** Matches GET /api/exercises → `ExerciseNameModel` from the API. */
+export type ExerciseNameOption = {
+  value: string;
+  label: string;
+};
+
+export type NewWorkoutLoaderData = {
+  exerciseOptions: ExerciseNameOption[];
+};
+
 export type NewWorkoutFormData = {
 // metrics    
-    exerciseTime: number;
+    time: number;
     calories: number;
     puls: number;
     maxPuls: number;
@@ -11,7 +21,7 @@ export type NewWorkoutFormData = {
 
 // exercises
     exercises: {
-        name: string;
+        exercise: string;
         weight: number;
     }[];
 

@@ -1,21 +1,23 @@
 import { App } from "antd";
 import { useState } from "react";
-import type { LoaderFunctionArgs } from "react-router-dom";
+import { useLoaderData, type LoaderFunctionArgs } from "react-router-dom";
 import StepWorkoutMetrics from "./StepWorkoutMetrics";
 import StepExercises from "./StepExercises";
 import StepBasicInfo from "./StepBasicInfo";
-import type { NewWorkoutFormData } from "./types";
+import type { NewWorkoutFormData, NewWorkoutLoaderData } from "./types";
 import { format } from 'date-fns'
+import { addWorkout, fetchWorkoutTemplate } from "@/utils/http";
 
 const steps = ["Workout Metrics", "Exercises", "Basic Info"];
 const currentDate = new Date().toISOString().split("T")[0];
 
 const NewWorkoutPage = () => {
+  const { exerciseOptions } = useLoaderData() as NewWorkoutLoaderData;
   const { message } = App.useApp();
   const [templateDate, setTemplateDate] = useState(currentDate);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<NewWorkoutFormData>({
-    exerciseTime: 0,
+    time: 0,
     calories: 0,
     puls: 0,
     maxPuls: 0,
@@ -38,43 +40,81 @@ const NewWorkoutPage = () => {
 
   const validateStep = () => {
     if (currentStep === 0) {
-      // return (
-      //   formData.exerciseTime > 0
-      //   && formData.calories > 0
-      //   && formData.puls > 0
-      //   && formData.maxPuls > 0
-      //   && formData.intensive.trim() !== ""
-      //   && formData.aero.trim() !== ""
-      //   && formData.anaero.trim() !== ""
-      //   && formData.trainingLoad >= 0
-      // );
+      return (
+        formData.time > 0
+        && formData.calories > 0
+        && formData.puls > 0
+        && formData.maxPuls > 0
+        && formData.intensive.trim() !== ""
+        && formData.aero.trim() !== ""
+        && formData.anaero.trim() !== ""
+        && formData.trainingLoad >= 0
+      );
     }
     if (currentStep === 1) {
-      // return formData.exercises.length > 0;
+      return formData.exercises.length > 0 && formData.exercises.every((e) => e.exercise.trim() !== "" && e.weight > 0);
     }
     if (currentStep === 2) {
-      // return formData.date.trim() !== "" && formData.rounds.trim() !== "" && formData.comment.trim() !== "";
+      return formData.date.trim() !== "" && formData.rounds.trim() !== "" && formData.comment.trim() !== "";
     }
     return true;
   };
 
+  const validationWarningForStep = (step: number) => {
+    switch (step) {
+      case 0:
+        return "Enter workout metrics: positive time, calories, pulses, all intensity fields, and training load.";
+      case 1:
+        return "Complete the exercises step before continuing.";
+      case 2:
+        return "Fill in required basic info before submitting.";
+      default:
+        return "Please complete this step before continuing.";
+    }
+  };
+
   const goNext = () => {
-    if (!validateStep()) return;
+    if (!validateStep()) {
+      message.warning(validationWarningForStep(currentStep));
+      return;
+    }
     setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
   };
 
   const goBack = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
   const handleSubmit = async () => {
+    if (!validateStep()) {
+      message.warning(validationWarningForStep(currentStep));
+      return;
+    }
     console.log("New workout payload", formData);
-    message.success("Workout submitted");
+    try {
+      formData.exercises = formData.exercises.map((e, index) => ({ ...e, order: index + 1 }));
+      await addWorkout(formData);
+      message.success("Workout submitted");
+    } catch (error) {
+      message.error("Failed to add workout!");
+    }
   };
 
-  const changeTemplateDateHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const changeTemplateDateHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
     const templateDateFormatted = format(new Date(newDate), 'yyyy-MM-dd');
     setTemplateDate(templateDateFormatted);
-  }
+    try {
+      const template = await fetchWorkoutTemplate(templateDateFormatted);
+      formData.rounds = template.rounds;
+      formData.comment = template.comment;
+      formData.exercises = template.exercises.map((e: { exercise: string, weight: number }) => ({
+        exercise: e.exercise,
+        weight: e.weight,
+      }));
+    } catch (error) {
+      message.warning("Template workout was not found!");
+      return;
+    }
+  };
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col overflow-hidden px-6 py-8 md:px-12">
@@ -132,7 +172,11 @@ const NewWorkoutPage = () => {
           <StepWorkoutMetrics formData={formData} updateField={updateField} />
         )}
         {currentStep === 1 && (
-          <StepExercises formData={formData} updateField={updateField} />
+          <StepExercises
+            formData={formData}
+            updateField={updateField}
+            exerciseOptions={exerciseOptions}
+          />
         )}
         {currentStep === 2 && (
           <StepBasicInfo formData={formData} updateField={updateField} />
@@ -175,7 +219,9 @@ const NewWorkoutPage = () => {
 
 export default NewWorkoutPage;
 
-export async function loader(_args: LoaderFunctionArgs) {
+export async function loader(
+  _args: LoaderFunctionArgs,
+): Promise<NewWorkoutLoaderData> {
   const response = await fetch("/api/exercises", {
     method: "GET",
     headers: {
@@ -183,5 +229,16 @@ export async function loader(_args: LoaderFunctionArgs) {
     },
   });
   if (!response.ok) throw new Response("Not Found", { status: 404 });
-  return response.json();
+  const raw: unknown = await response.json();
+  const list = Array.isArray(raw) ? raw : [];
+  const exerciseOptions = list
+    .filter((row): row is { value?: unknown; label?: unknown } =>
+      row != null && typeof row === "object",
+    )
+    .map((row) => ({
+      value: String(row.value ?? ""),
+      label: String(row.label ?? row.value ?? ""),
+    }))
+    .filter((o) => o.value !== "");
+  return { exerciseOptions };
 }

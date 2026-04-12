@@ -1,3 +1,5 @@
+import type { NewWorkoutFormData } from "@/pages/new_workout/types"
+
 export const fetchCalendarEvents = async (startDate: string, endDate: string) => {
  	const response = await fetch(
  		'/api/calendar_events',
@@ -43,4 +45,35 @@ export async function fetchCurrentPeriod() {
 	}
 
 	return await response.json()
+}
+
+export async function fetchWorkoutTemplate(date: string) {
+	const response = await fetch(
+		`/api/template_workout?date=${date}`,
+		{
+			method: 'GET',
+		}
+	)
+
+	if (!response.ok) {
+		throw new Error('Failed to fetch workout template!')
+	}
+
+	return await response.json()
+}
+
+export async function addWorkout(workout: NewWorkoutFormData) {
+	const response = await fetch(
+		'/api/add_workout',
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(workout)
+		}
+	)
+	if (!response.ok) {
+		throw new Error('Failed to add workout!')
+	}
 }
