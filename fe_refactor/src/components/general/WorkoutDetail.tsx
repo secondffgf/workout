@@ -10,14 +10,14 @@ interface WorkoutDetailProps {
 	workouts: any[];
 	selectWorkout: (workout: any, checked: boolean) => void;
 	showCheckbox?: boolean;
-	refreshFavorites?: () => void;
+	refreshWorkouts?: () => void;
 }
 
 export default function WorkoutDetail({
 	workouts,
 	selectWorkout,
 	showCheckbox = false,
-	refreshFavorites = () => {}
+	refreshWorkouts = () => {}
 }: WorkoutDetailProps) {
 	const [leftSelected, setLeftSelected] = useState(null)
 	const [rightSelected, setRightSelected] = useState(null)
@@ -54,7 +54,7 @@ export default function WorkoutDetail({
 						setLeftSelected={setLeftSelected}
 						rightSelected={rightSelected}
 						setRightSelected={setRightSelected}
-						refreshFavorites={refreshFavorites}
+						refreshWorkouts={refreshWorkouts}
 					/>
 				))}
 			</div>

@@ -1,4 +1,4 @@
-import type { NewWorkoutFormData } from "./types";
+import type { NewWorkoutFormData } from "../../types";
 
 type StepBasicInfoProps = {
   formData: NewWorkoutFormData;

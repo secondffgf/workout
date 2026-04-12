@@ -5,11 +5,11 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import './index.css';
 import App from './App.tsx';
 import MonthPage, { loader as monthDataLoader } from './pages/MonthPage.tsx';
-import WeekPage from './pages/WeekPage.tsx';
+import WeekPage, { loader as weekDataLoader } from './pages/WeekPage.tsx';
 import YearPage from './pages/YearPage.tsx';
 import AllPage from './pages/AllPage.tsx';
-import Favorite from './pages/Favorite.tsx';
-import Flagged from './pages/Flagged.tsx';
+import Favorite, { loader as favoriteLoader } from './pages/Favorite.tsx';
+import Flagged, { loader as flaggedLoader } from './pages/Flagged.tsx';
 import NewWorkoutPage, { loader as newWorkoutLoader } from './pages/new_workout/NewWorkoutPage.tsx';
 import SearchAndCompare from './pages/SearchAndCompare.tsx';
 
@@ -24,12 +24,16 @@ const router = createBrowserRouter([
         element: <MonthPage />,
         loader: monthDataLoader
       },
-      { path: 'week', element: <WeekPage /> },
+      {
+        path: 'week',
+        element: <WeekPage />,
+        loader: weekDataLoader,
+      },
       { path: 'year', element: <YearPage /> },
       { path: 'month', element: <MonthPage /> },
       { path: 'all', element: <AllPage /> },
-      { path: 'favorite', element: <Favorite /> },
-      { path: 'flagged', element: <Flagged /> },
+      { path: 'favorite', element: <Favorite />, loader: favoriteLoader },
+      { path: 'flagged', element: <Flagged />, loader: flaggedLoader },
       { path: 'add', element: <NewWorkoutPage />, loader: newWorkoutLoader },
       { path: 'search', element: <SearchAndCompare /> },
     ],

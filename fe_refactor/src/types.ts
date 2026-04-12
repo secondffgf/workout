@@ -1,4 +1,3 @@
-/** Matches GET /api/exercises → `ExerciseNameModel` from the API. */
 export type ExerciseNameOption = {
   value: string;
   label: string;
@@ -29,4 +28,23 @@ export type NewWorkoutFormData = {
   date: string;
   rounds: string;
   comment: string;
+};
+
+export type WorkoutType = {
+  exercises: any[];
+  id: any;
+  date: any;
+  xaxisLabel: string;
+  time: any;
+  rounds: any;
+  comment: any;
+}
+
+export type WorkoutData = {
+  statistics: {
+    exerciseTime: string;
+    calories: number;
+  };
+  content: WorkoutType[];
+  totalElements: number;
 };

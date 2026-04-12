@@ -56,9 +56,9 @@ export default function NavigationSidebar() {
 					className="flex items-center space-x-2"
 					children={({isActive}) => (
 						<>
-							<MdOutlineCalendarViewWeek className="text-red-500" />
-							<span className="text-red-500">Week</span>
-							{isActive ? <TiTickOutline className="text-red-500" /> : null}
+							<MdOutlineCalendarViewWeek className="text-white hover:text-sky-200" />
+							<span className="text-white hover:text-sky-200">Week</span>
+							{isActive ? <TiTickOutline className="text-white hover:text-sky-200" /> : null}
 						</>
 					)}
 				/>
@@ -125,9 +125,9 @@ export default function NavigationSidebar() {
 					className="flex items-center space-x-2"
 					children={({isActive}) => (
 						<>
-							<MdOutlineFlag className="text-red-500" />
-							<span className="text-red-500">Flagged Workouts</span>
-							{isActive ? <TiTickOutline className="text-red-500" /> : null}
+							<MdOutlineFlag className="text-white hover:text-sky-200" />
+							<span className="text-white hover:text-sky-200">Flagged Workouts</span>
+							{isActive ? <TiTickOutline className="text-white hover:text-sky-200" /> : null}
 						</>
 					)}
 				/>
@@ -149,8 +149,8 @@ export default function NavigationSidebar() {
 					onClick={openPanel}
 					dark
 				>
-					<MdOutlineAdminPanelSettings className="text-white hover:text-sky-200" />&nbsp;
-					<span className="text-white hover:text-sky-200">Admin Panel</span>
+					<MdOutlineAdminPanelSettings className="text-red-500" />&nbsp;
+					<span className="text-red-500">Admin Panel</span>
 				</Button>
 			</div>
     </nav>

@@ -1,13 +1,3 @@
-export type WorkoutType = {
-    exercises: any[];
-    id: any;
-    date: any;
-    xaxisLabel: string;
-    time: any;
-    rounds: any;
-    comment: any;
-}
-
 export function formatMonthlyChartData(payload: WorkoutType[]) {
    const shortLabel = payload.length > 12
    let chartData = payload.map((workout: WorkoutType) => {

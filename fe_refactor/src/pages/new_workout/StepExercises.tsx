@@ -1,7 +1,7 @@
 import { AutoComplete, ConfigProvider } from "antd";
 import { useMemo } from "react";
 import { RiCloseFill } from "react-icons/ri";
-import type { ExerciseNameOption, NewWorkoutFormData } from "./types";
+import type { ExerciseNameOption, NewWorkoutFormData } from "../../types";
 
 type StepExercisesProps = {
   formData: NewWorkoutFormData;

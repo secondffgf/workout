@@ -1,12 +1,12 @@
 import { App } from "antd";
 import { useState } from "react";
-import { useLoaderData, type LoaderFunctionArgs } from "react-router-dom";
+import { useLoaderData, useNavigate, type LoaderFunctionArgs } from "react-router-dom";
 import StepWorkoutMetrics from "./StepWorkoutMetrics";
 import StepExercises from "./StepExercises";
 import StepBasicInfo from "./StepBasicInfo";
-import type { NewWorkoutFormData, NewWorkoutLoaderData } from "./types";
+import type { NewWorkoutFormData, NewWorkoutLoaderData } from "../../types";
 import { format } from 'date-fns'
-import { addWorkout, fetchWorkoutTemplate } from "@/utils/http";
+import { addWorkout, fetchCalendarEvents, fetchWorkoutTemplate } from "@/utils/http";
 
 const steps = ["Workout Metrics", "Exercises", "Basic Info"];
 const currentDate = new Date().toISOString().split("T")[0];
@@ -30,6 +30,8 @@ const NewWorkoutPage = () => {
     rounds: "",
     comment: "",
   });
+
+  const navigate = useNavigate();
 
   const updateField = <K extends keyof NewWorkoutFormData>(
     key: K,
@@ -92,7 +94,10 @@ const NewWorkoutPage = () => {
     try {
       formData.exercises = formData.exercises.map((e, index) => ({ ...e, order: index + 1 }));
       await addWorkout(formData);
+      // TODO: refresh calendar events
+      // TODO: refresh charts
       message.success("Workout submitted");
+      navigate("/month");
     } catch (error) {
       message.error("Failed to add workout!");
     }
@@ -229,16 +234,10 @@ export async function loader(
     },
   });
   if (!response.ok) throw new Response("Not Found", { status: 404 });
-  const raw: unknown = await response.json();
-  const list = Array.isArray(raw) ? raw : [];
-  const exerciseOptions = list
-    .filter((row): row is { value?: unknown; label?: unknown } =>
-      row != null && typeof row === "object",
-    )
-    .map((row) => ({
-      value: String(row.value ?? ""),
-      label: String(row.label ?? row.value ?? ""),
-    }))
-    .filter((o) => o.value !== "");
+  const raw: {label: string, value: string}[] = await response.json();
+  const exerciseOptions = raw.map(({ label, value }) => ({
+    value,
+    label,
+  }));
   return { exerciseOptions };
 }

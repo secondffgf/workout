@@ -3,17 +3,9 @@ import { FirstWorkoutContext } from "@/context/FirstWorkoutContextProvider";
 import MonthSelector from "@/components/dashboard/MonthSelector";
 import { useLoaderData, useSearchParams } from "react-router-dom";
 import WorkoutBarChart from "@/components/general/UI/chart/WorkoutBarChart";
-import { formatMonthlyChartData, type WorkoutType } from "@/utils/utils";
+import { formatMonthlyChartData } from "@/utils/utils";
+import type { WorkoutData } from "@/types";
 import WorkoutDetail from "@/components/general/WorkoutDetail";
-
-type WorkoutData = {
-  statistics: {
-    exerciseTime: string;
-    calories: number;
-  };
-  content: WorkoutType[];
-  totalElements: number;
-};
 
 const formatMonthValue = (date: Date) =>
   new Intl.DateTimeFormat("en", {
@@ -36,7 +28,12 @@ const normalizeStartOfPeriod = (startParam: string | null) => {
 
 const MonthPage = () => {
   const firstWorkoutState:
-  { state: { firstWorkout: string; error: string | null } } | undefined = useContext(FirstWorkoutContext) 
+  {
+    state:{
+      firstWorkout: string;
+      error: string | null
+    }
+  } | undefined = useContext(FirstWorkoutContext);
   const firstWorkout = firstWorkoutState?.state.firstWorkout || '';
   const [, setSearchParams] = useSearchParams();
   const workouts: WorkoutData = useLoaderData();
@@ -51,7 +48,7 @@ const MonthPage = () => {
     <div className="w-full flex flex-col items-center">
       <MonthSelector
         onChange={(newMonth: string) => {
-          setSearchParams((prevParams) => {
+          setSearchParams((prevParams: URLSearchParams) => {
             const nextParams = new URLSearchParams(prevParams);
             nextParams.set("start", newMonth);
             return nextParams;

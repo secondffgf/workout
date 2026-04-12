@@ -81,7 +81,7 @@ export default function WorkoutSnapshot({
 	setLeftSelected,
 	rightSelected,
 	setRightSelected,
-	refreshFavorites = () => {}
+	refreshWorkouts = () => {}
 }: {
 	workout: any;
 	onSelect: (workout: any, checked: boolean) => void;
@@ -90,7 +90,7 @@ export default function WorkoutSnapshot({
 	setLeftSelected: (id: any) => void;
 	rightSelected: any;
 	setRightSelected: (id: any) => void;
-	refreshFavorites?: () => void;
+	refreshWorkouts?: () => void;
 
 }) {
 	const [snapshot, setSnapshot] = useState(workout)
@@ -119,9 +119,9 @@ export default function WorkoutSnapshot({
 		}
 	}
 
-	const handleFavoriteClick = async () => {
+	const handleWorkoutClick = async () => {
 		await sendRequest(JSON.stringify({ workout: snapshot.id}))
-		refreshFavorites()
+		refreshWorkouts()
 		setSnapshot((prev: { favorite: any; }) => ({ ...prev, favorite: !prev.favorite }))
 	}
 
@@ -145,7 +145,7 @@ export default function WorkoutSnapshot({
 						<FaRegHandPointRight className="text-green-600" />
 					}
 				</div>
-				<span className="mr-2 ml-2 cursor-pointer min-w-[2em]" onClick={handleFavoriteClick}>
+				<span className="mr-2 ml-2 cursor-pointer min-w-[2em]" onClick={handleWorkoutClick}>
 					<CiStar className={starClasses} />
 				</span>
 				<div key="label" className="pl-2">

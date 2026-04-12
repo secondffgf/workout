@@ -52,7 +52,6 @@ const MonthSelector = ({ startDate, onChange }: MonthSelectorProps) => {
                 style={{ width: 220 }}
                 options={options}
                 defaultValue={currentMonth}
-                placeholder="Select Month"
                 onChange={(value) => onChange(value)}
                 
             />

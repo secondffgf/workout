@@ -1,4 +1,4 @@
-import type { NewWorkoutFormData } from "@/pages/new_workout/types"
+import type { NewWorkoutFormData } from "@/types"
 
 export const fetchCalendarEvents = async (startDate: string, endDate: string) => {
  	const response = await fetch(
