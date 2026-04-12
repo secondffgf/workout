@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkoutCsv {
-	@CsvBindByName(column = "id")
-	private String id;
 	@CsvBindByName(column = "date")
 	private String date;
 	@CsvBindByName(column = "exercise_time")

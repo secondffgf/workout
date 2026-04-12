@@ -1,7 +1,6 @@
 package com.workout.service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -13,22 +12,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import java.util.Objects;
-
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.CsvToBeanBuilder;
-import com.workout.entity.Workout;
 import com.workout.model.WorkoutCsv;
 import com.workout.model.WorkoutCsv.WorkoutCsvBuilder;
 import com.workout.projection.WorkoutFullProjection;
 import com.workout.repository.ExerciseRepository;
-import com.workout.repository.WorkoutRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -36,8 +26,8 @@ import lombok.SneakyThrows;
 @RequiredArgsConstructor
 public class ExportService {
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
 	private final ExerciseRepository exerciseRepository;
-	private final WorkoutRepository workoutRepository;
 
 	@SneakyThrows
 	public byte[] exportCsv() {
@@ -54,33 +44,6 @@ public class ExportService {
             zipStream.closeEntry();
         }
 		return zipOutStream.toByteArray();
-	}
-	
-	@SneakyThrows
-	public String importCsv(MultipartFile zipFile) {
-		int importedCount = 0;
-		try (ZipInputStream zis = new ZipInputStream(zipFile.getInputStream())) {
-			ZipEntry entry;
-
-            while ((entry = zis.getNextEntry()) != null) {
-            	if (entry.getName().endsWith(".csv")) {
-            		InputStreamReader reader = new InputStreamReader(zis);
-            		var csvToBean = new CsvToBeanBuilder<WorkoutCsv>(reader)
-                            .withType(WorkoutCsv.class)
-                            .withIgnoreLeadingWhiteSpace(true)
-                            .build();
-            		List<WorkoutCsv> workoutCsvList = csvToBean.parse();
-            		List<Workout> entities = mapToWorkout(workoutCsvList);
-            		
-					if (entities != null && !entities.isEmpty()) {
-						workoutRepository.saveAll(entities);
-						importedCount = entities.size();
-					}
-            	}
-            	zis.closeEntry();
-            }
-		}
-		return "Imported " + importedCount + " workouts from ZIP";
 	}
 	
 	private List<WorkoutCsv> mapToCsvModel(List<WorkoutFullProjection> data) {
@@ -103,7 +66,6 @@ public class ExportService {
 			var projection = projections.get(i);
 			if (i == 0) {
 				modelBuilder
-					.id(projection.getId().toString())
 					.aerobish(projection.getAerobish())
 					.anaerobish(projection.getAnaerobish())
 					.calories(projection.getCalories().toString())
@@ -145,13 +107,12 @@ public class ExportService {
 		StringWriter stringWriter = new StringWriter();
 		try (CSVWriter csvWriter = new CSVWriter(stringWriter)) {
 			csvWriter.writeNext(new String[] {
-				"id", "date", "exercise_time", "calories", "puls", "max_puls",
+				"date", "exercise_time", "calories", "puls", "max_puls",
 				"intensive", "aerobish", "anaerobish", "training_load",
 				"rounds", "comment", "exercises"
 			});
 			for (WorkoutCsv dto : csvData) {
                 csvWriter.writeNext(new String[]{
-            		dto.getId().toString(),
                     dto.getDate().toString(),
                     dto.getExerciseTime().toString(),
                     dto.getCalories().toString(),
@@ -168,11 +129,5 @@ public class ExportService {
 			}
 		}
 		return stringWriter.toString();
-	}
-
-	private List<Workout> mapToWorkout(List<WorkoutCsv> workoutCsvList) {
-		workoutCsvList.toString();
-		// TODO Auto-generated method stub
-		return List.of();
 	}
 }

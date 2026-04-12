@@ -13,38 +13,20 @@ import {
 import { GiCalendarHalfYear } from "react-icons/gi"
 import { PiCalendarSlash } from "react-icons/pi"
 import { TiTickOutline } from "react-icons/ti"
-import { BASE_URL_DEVELOPMENT } from '@/constants.js'
 import { GrOverview } from 'react-icons/gr'
 import Button from '@/components/general/UI/Button'
+import AdminPanelContent from './general/AdminPanelContent'
+import { RiCloseFill } from 'react-icons/ri'
 
 export default function NavigationSidebar() {
   const [isOpenPanel, setIsOpenPanel] = useState(false)
-  const modal = useRef({})
-  const subscribeEmail = useRef({})
-
-  const exportWorkouts = async () => {
-    const response = await axios.get(`${BASE_URL_DEVELOPMENT}/export/csv`, {
-        responseType: 'blob'
-    })
-
-    const url = window.URL.createObjectURL(new Blob([response.data]))
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', 'workouts.zip')
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-  }
 
   const openPanel = () => {
     setIsOpenPanel(true);
   }
 
-  const showSubscribeModal = () => {
-    modal.current.open()
-  }
-
   return (
+    <>
     <nav className="w-fit px-6 py-8 bg-sky-600 text-sky-50 rounded-r-xl flex flex-col my-auto mr-4 h-[90vh] z-10">
 		  <h2 className="font-bold uppercase text-xl text-sky-200 flex items-center space-x-2">
 				<GrOverview />
@@ -149,10 +131,39 @@ export default function NavigationSidebar() {
 					onClick={openPanel}
 					dark
 				>
-					<MdOutlineAdminPanelSettings className="text-red-500" />&nbsp;
-					<span className="text-red-500">Admin Panel</span>
+					<MdOutlineAdminPanelSettings className="text-white hover:text-sky-200" />&nbsp;
+					<span className="text-white hover:text-sky-200">Admin Panel</span>
 				</Button>
 			</div>
     </nav>
+    {isOpenPanel ? (
+      <>
+        <button
+          type="button"
+          aria-label="Close admin panel"
+          className="fixed inset-0 z-20 bg-black/40"
+          onClick={() => setIsOpenPanel(false)}
+        />
+        <aside
+          className="fixed inset-y-0 right-0 z-30 flex w-1/5 min-w-0 flex-col border-l border-sky-200 bg-sky-50 text-sky-900 shadow-2xl"
+        >
+          <div className="flex items-center justify-between border-b border-sky-200 px-4 py-3">
+            <h3 className="text-lg font-semibold">Admin Panel</h3>
+            <button
+              type="button"
+              className="rounded px-2 py-1 text-2xl leading-none text-sky-700 hover:bg-sky-200/60"
+              aria-label="Close"
+              onClick={() => setIsOpenPanel(false)}
+            >
+			  <RiCloseFill className="h-6 w-6" aria-hidden />
+            </button>
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto p-4">
+            <AdminPanelContent />
+          </div>
+        </aside>
+      </>
+    ) : null}
+    </>
   );
 };

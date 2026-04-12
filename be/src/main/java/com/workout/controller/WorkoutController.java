@@ -32,6 +32,7 @@ import com.workout.model.WorkoutModel;
 import com.workout.model.WorkoutsPeriod;
 import com.workout.model.WorkoutsResponse;
 import com.workout.service.ExportService;
+import com.workout.service.ImportService;
 import com.workout.service.WorkoutService;
 
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ import lombok.RequiredArgsConstructor;
 public class WorkoutController {
 	private final WorkoutService workoutService;
 	private final ExportService exportService;
+	private final ImportService importService;
 
 	@PostMapping("/add_workout")
 	public ResponseEntity<Void> addWorkout(
@@ -65,6 +67,9 @@ public class WorkoutController {
 	@GetMapping(value = "/export/csv", produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public ResponseEntity<ByteArrayResource> exportCsv() {
 		byte[] content = exportService.exportCsv();
+		if (content == null) {
+			return ResponseEntity.notFound().build();
+		}
 		ByteArrayResource resource = new ByteArrayResource(content);
 
         HttpHeaders headers = new HttpHeaders();
@@ -81,7 +86,7 @@ public class WorkoutController {
 	public ResponseEntity<String> importCsv(
 		@RequestParam("file") MultipartFile file
 	) {
-		String response = exportService.importCsv(file);
+		String response = importService.importCsv(file);
 		return ResponseEntity.ok()
 			.body(response);
 	}
