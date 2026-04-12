@@ -41,3 +41,9 @@
 	min-height: 1.2em;
 	position: relative;
 }
+
+.workout-calendar .fc-col-header-cell,
+.workout-calendar .fc-col-header-cell-cushion,
+.workout-calendar .fc-col-header-cell a {
+	color: #000;
+}

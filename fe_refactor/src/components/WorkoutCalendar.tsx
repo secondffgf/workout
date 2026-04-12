@@ -35,11 +35,11 @@ const WorkoutCalendar = () => {
 
   const {
 		data: flaggedDays,
-		sendRequest: sendFlaggedDayRequest
-	} = useHttp(
-		'/api/add_flagged',
+		sendRequest: sendFlaggedDayRequest,
+	} = useHttp<string[]>(
+		"/api/add_flagged",
 		requestConfig,
-		[]
+		[],
 	);
 
   const handleDataSet = (arg: { startStr: string; endStr: string }) => {
@@ -77,8 +77,8 @@ const WorkoutCalendar = () => {
 						<span className="text-red-500 mr-2">
 							<BsFlagFill />
 						</span>
-						<span>
-							{arg.dayNumberText}	
+						<span className="text-black">
+							{arg.dayNumberText}
 						</span>
 					</div>
 				</div>
@@ -92,15 +92,15 @@ const WorkoutCalendar = () => {
 				<span className={`text-yellow-500 mr-2 ${flaggedDays.includes(dateStr) ? '' : 'hidden group-hover:inline'}`}>
 					<BsFlagFill />
 				</span>
-				<span>
-					{arg.dayNumberText}	
+				<span className="text-black">
+					{arg.dayNumberText}
 				</span>
 			</div>
 		)
 	}
 
 	return (
-		<div className="flex-none w-[30rem] mt-6">
+		<div className="workout-calendar flex-none w-[30rem] mt-6">
 			<FullCalendar
 				plugins={[dayGridPlugin]}
 				initialView="dayGridMonth"
@@ -108,12 +108,13 @@ const WorkoutCalendar = () => {
 				firstDay={1}
 				events={calendarData}
 				dayCellContent={renderDayCell}
-				eventColor="#74d4ff"
+				eventColor="#075985"
+				eventTextColor="#f8fafc"
 				validRange={{
 				start: firstWorkout
 				}}
 				eventDidMount={(info) => {
-				info.el.setAttribute('title', info.event.extendedProps.description || '');
+					info.el.setAttribute('title', info.event.extendedProps.description || '');
 				}}
 				datesSet={handleDataSet}
 			/>

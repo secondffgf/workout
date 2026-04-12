@@ -59,7 +59,7 @@ const MonthPage = () => {
         }}
         startDate={firstWorkout}
       />
-      <div className="flex justify-between w-full font-semibold text-lg px-8 mt-4">
+      <div className="flex justify-evenly w-full font-semibold text-lg px-16 mt-4">
         <div>{workouts.statistics.exerciseTime}</div>
         <div>{workouts.statistics.calories} ccal</div>
         <div>{workouts.totalElements} workouts</div>

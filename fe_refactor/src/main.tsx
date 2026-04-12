@@ -1,7 +1,7 @@
-
+import { App as AntdApp, ConfigProvider } from 'antd';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import './index.css';
 import App from './App.tsx';
 import MonthPage, { loader as monthDataLoader } from './pages/MonthPage.tsx';
@@ -10,7 +10,7 @@ import YearPage from './pages/YearPage.tsx';
 import AllPage from './pages/AllPage.tsx';
 import Favorite from './pages/Favorite.tsx';
 import Flagged from './pages/Flagged.tsx';
-import NewWorkoutPage from './pages/new_workout/NewWorkoutPage.tsx';
+import NewWorkoutPage, { loader as newWorkoutLoader } from './pages/new_workout/NewWorkoutPage.tsx';
 import SearchAndCompare from './pages/SearchAndCompare.tsx';
 
 const router = createBrowserRouter([
@@ -18,6 +18,7 @@ const router = createBrowserRouter([
     path: '/',
     element: <App />,
     children: [
+      { index: true, element: <Navigate to="/month" replace /> },
       {
         path: 'month',
         element: <MonthPage />,
@@ -29,15 +30,18 @@ const router = createBrowserRouter([
       { path: 'all', element: <AllPage /> },
       { path: 'favorite', element: <Favorite /> },
       { path: 'flagged', element: <Flagged /> },
-      { path: 'new', element: <NewWorkoutPage /> },
+      { path: 'add', element: <NewWorkoutPage />, loader: newWorkoutLoader },
       { path: 'search', element: <SearchAndCompare /> },
-      { path: 'add', element: <NewWorkoutPage /> },
     ],
   },
 ]);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ConfigProvider>
+      <AntdApp>
+        <RouterProvider router={router} />
+      </AntdApp>
+    </ConfigProvider>
   </StrictMode>
 );

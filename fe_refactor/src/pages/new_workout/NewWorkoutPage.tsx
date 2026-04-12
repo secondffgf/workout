@@ -1,4 +1,6 @@
+import { App } from "antd";
 import { useState } from "react";
+import type { LoaderFunctionArgs } from "react-router-dom";
 import StepWorkoutMetrics from "./StepWorkoutMetrics";
 import StepExercises from "./StepExercises";
 import StepBasicInfo from "./StepBasicInfo";
@@ -9,6 +11,7 @@ const steps = ["Workout Metrics", "Exercises", "Basic Info"];
 const currentDate = new Date().toISOString().split("T")[0];
 
 const NewWorkoutPage = () => {
+  const { message } = App.useApp();
   const [templateDate, setTemplateDate] = useState(currentDate);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<NewWorkoutFormData>({
@@ -34,16 +37,24 @@ const NewWorkoutPage = () => {
   };
 
   const validateStep = () => {
-    // if (currentStep === 0) {
-    //   return (
-    //     formData.durationMinutes > 0
-    //     && formData.trainingLoad >= 0
-    //     && formData.calories >= 0
-    //   );
-    // }
-    // if (currentStep === 2) {
-    //   return formData.date.trim() !== "" && formData.title.trim() !== "";
-    // }
+    if (currentStep === 0) {
+      // return (
+      //   formData.exerciseTime > 0
+      //   && formData.calories > 0
+      //   && formData.puls > 0
+      //   && formData.maxPuls > 0
+      //   && formData.intensive.trim() !== ""
+      //   && formData.aero.trim() !== ""
+      //   && formData.anaero.trim() !== ""
+      //   && formData.trainingLoad >= 0
+      // );
+    }
+    if (currentStep === 1) {
+      // return formData.exercises.length > 0;
+    }
+    if (currentStep === 2) {
+      // return formData.date.trim() !== "" && formData.rounds.trim() !== "" && formData.comment.trim() !== "";
+    }
     return true;
   };
 
@@ -56,6 +67,7 @@ const NewWorkoutPage = () => {
 
   const handleSubmit = async () => {
     console.log("New workout payload", formData);
+    message.success("Workout submitted");
   };
 
   const changeTemplateDateHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,10 +77,10 @@ const NewWorkoutPage = () => {
   }
 
   return (
-    <div className="w-full px-6 py-8 md:px-12">
-      <h2 className="text-2xl font-semibold text-slate-800">Add New Workout</h2>
+    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden px-6 py-8 md:px-12">
+      <h2 className="shrink-0 text-2xl font-semibold text-slate-800">Add New Workout</h2>
 
-      <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-3">
+      <div className="mt-6 grid shrink-0 grid-cols-1 gap-3 md:grid-cols-3">
         {steps.map((step, index) => {
           const isActive = index === currentStep;
           const isDone = index < currentStep;
@@ -85,21 +97,37 @@ const NewWorkoutPage = () => {
         })}
       </div>
 
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="text-sm text-slate-600">
-            <label className="flex flex-col gap-2">
-                <span className="text-sm font-medium text-slate-700">Template Workout Date</span>
-                <input
-                type="date"
-                value={templateDate}
-                onChange={changeTemplateDateHandler}
-                className="rounded-md border border-slate-300 px-3 py-2 outline-none focus:border-sky-500"
-                />
-            </label>
+      <div className="mt-6 shrink-0 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="text-sm text-slate-600 grid grid-cols-2 gap-4 px-16">
+          <label className="flex flex-col gap-2 w-[80%]">
+            <span className="text-sm font-medium text-slate-700">Workout Date</span>
+            <input
+              type="date"
+              value={formData.date}
+              onChange={(e) => updateField("date", e.target.value)}
+              className="rounded-md border border-slate-300 px-3 py-2 outline-none focus:border-sky-500"
+            />
+          </label>
+          <label className="flex flex-col gap-2 w-[80%]">
+              <span className="text-sm font-medium text-slate-700">Template Workout Date</span>
+              <input
+              type="date"
+              value={templateDate}
+              onChange={changeTemplateDateHandler}
+              className="rounded-md border border-slate-300 px-3 py-2 outline-none focus:border-sky-500"
+              />
+          </label>
         </div>
       </div>
 
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div
+        id="step-content"
+        className={`mt-6 min-h-0 flex-1 rounded-xl border border-slate-200 bg-white p-6 shadow-sm ${
+          currentStep === 1
+            ? "flex flex-col overflow-hidden"
+            : "overflow-y-auto"
+        }`}
+      >
         {currentStep === 0 && (
           <StepWorkoutMetrics formData={formData} updateField={updateField} />
         )}
@@ -111,7 +139,7 @@ const NewWorkoutPage = () => {
         )}
       </div>
 
-      <div className="mt-6 flex items-center justify-end gap-3">
+      <div className="mt-6 flex shrink-0 items-center justify-end gap-3">
         <button
           type="button"
           onClick={goBack}
@@ -146,3 +174,14 @@ const NewWorkoutPage = () => {
 };
 
 export default NewWorkoutPage;
+
+export async function loader(_args: LoaderFunctionArgs) {
+  const response = await fetch("/api/exercises", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) throw new Response("Not Found", { status: 404 });
+  return response.json();
+}
