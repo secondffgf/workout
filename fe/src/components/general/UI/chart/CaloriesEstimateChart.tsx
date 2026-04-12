@@ -12,6 +12,7 @@ import {
 import { CurrentPeriodContext } from '@/context/CurrentPeriodContextProvider'
 
 const estimates = [642, 481, 385, 321, 275]
+const middle_estimates = [321, 240, 192, 160, 137]
 
 function darkenHexColor(hex, factor = 0.35) {
 // Remove the leading '#' if present
@@ -89,6 +90,7 @@ export default function CaloriesEstimateChart() {
 		const item = {
 			name: `${workoutsPerWeek}`,
 			goal: estimates[i],
+			mid_goal: middle_estimates[i],
 			actual: averageCaloriesPerWorkout,
 			previous: averageCaloriesPerWorkoutPrevWeek
 		}
@@ -136,21 +138,28 @@ export default function CaloriesEstimateChart() {
 					<Line
 						type="monotone"
 						dataKey="goal"
-						stroke="#C8008C"
+						stroke="#16A34A"
+						activeDot={{ r: 5 }}
+						dot={renderCustomDot}
+					/>
+					<Line
+						type="monotone"
+						dataKey="mid_goal"
+						stroke="#F59E0B"
 						activeDot={{ r: 5 }}
 						dot={renderCustomDot}
 					/>
 					<Line
 						type="monotone"
 						dataKey="actual"
-						stroke="#82ca9d"
+						stroke="#60A5FA"
 						activeDot={{ r: 5 }}
 						dot={renderCustomDot}
 					/>
 					<Line
 						type="monotone"
 						dataKey="previous"
-						stroke="#8884d8"
+						stroke="#1E3A8A"
 						activeDot={{ r: 5 }}
 						dot={renderCustomDot}
 					/>

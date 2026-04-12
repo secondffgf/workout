@@ -53,7 +53,7 @@ export default function NavigationSidebar() {
 			<div className="flex flex-col mb-16 pl-6 gap-2 pt-2 text-lg text-white">
 				<NavLink
 					to="/week"
-					className="flex items-center space-x-2"
+					className="flex items-center space-x-2 text-red-500"
 					children={({isActive}) => (
 						<>
 							<MdOutlineCalendarViewWeek />
@@ -75,7 +75,7 @@ export default function NavigationSidebar() {
 				/>
 				<NavLink
 					to="/year"
-					className="flex items-center space-x-2"
+					className="flex items-center space-x-2 text-red-500"
 					children={({isActive}) => (
 						<>
 							<GiCalendarHalfYear />
@@ -86,7 +86,7 @@ export default function NavigationSidebar() {
 				/>
 				<NavLink
 					to="/all"
-					className="flex items-center space-x-2"
+					className="flex items-center space-x-2 text-red-500"
 					children={({isActive}) => (
 						<>
 							<PiCalendarSlash />
@@ -100,7 +100,7 @@ export default function NavigationSidebar() {
 			<div className="mt-4 mb-16 flex flex-col text-lg text-white w-full gap-2 pt-2 min-w-[200px]">
 				<NavLink
 					to="/search"
-					className="flex items-center space-x-2"
+					className="flex items-center space-x-2 text-red-500"
 					children={({isActive}) => (
 						<>
 							<MdImageSearch />
@@ -122,7 +122,7 @@ export default function NavigationSidebar() {
 				/>
 				<NavLink
 					to="/flagged"
-					className="flex items-center space-x-2"
+					className="flex items-center space-x-2 text-red-500"
 					children={({isActive}) => (
 						<>
 							<MdOutlineFlag />

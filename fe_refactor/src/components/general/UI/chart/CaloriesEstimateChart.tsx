@@ -40,7 +40,7 @@ function darkenHexColor(hex: string, factor = 0.35) {
 	return newHex;
 }
 
-const CustomTooltip = ({ active, payload, label }: { active: boolean; payload: any[]; label: string }) => {
+const CustomTooltip = ({ active = false, payload = [], label = '' }: { active: boolean; payload: any[]; label: string }) => {
 	if (active && payload && payload.length) {
     const ordered = [...payload].sort((a, b) => {
       const order = ["goal", "actual"];

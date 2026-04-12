@@ -10,7 +10,7 @@ import YearPage from './pages/YearPage.tsx';
 import AllPage from './pages/AllPage.tsx';
 import Favorite from './pages/Favorite.tsx';
 import Flagged from './pages/Flagged.tsx';
-import NewWorkoutPage from './pages/NewWorkoutPage.tsx';
+import NewWorkoutPage from './pages/new_workout/NewWorkoutPage.tsx';
 import SearchAndCompare from './pages/SearchAndCompare.tsx';
 
 const router = createBrowserRouter([
@@ -31,6 +31,7 @@ const router = createBrowserRouter([
       { path: 'flagged', element: <Flagged /> },
       { path: 'new', element: <NewWorkoutPage /> },
       { path: 'search', element: <SearchAndCompare /> },
+      { path: 'add', element: <NewWorkoutPage /> },
     ],
   },
 ]);
