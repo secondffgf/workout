@@ -22,6 +22,9 @@ export default function CustomizedYearlyTooltip({ active, payload }: CustomizedM
 					<p className="mb-2 text-sx">
 						<span className="font-bold">Trainings:</span> {training.trainings}
 					</p>
+					<p className="mb-2 text-sx">
+						<span className="font-bold">Training Load:</span> {training.trainingLoad}
+					</p>
 				</div>
 			</div>
 		)

@@ -8,6 +8,8 @@ import { formatYearlyChartData } from "@/utils/utils";
 
 const ticks = [0, 90, 180, 270, 360, 450, 540, 630, 720];
 const caloriesTicks = [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000];
+const trainingsTicks = [5, 10, 15, 20, 25, 30];
+const trainingLoadTicks = [15, 20, 25, 30, 35, 40, 45, 50, 55];
 
 function minutesToHHMM(totalMinutes: number) {
 	const hours = Math.floor(totalMinutes / 60);
@@ -31,7 +33,7 @@ const YearPage = () => {
   const chartData = formatYearlyChartData(workouts.content);
 
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="flex min-h-0 w-full flex-1 flex-col items-center">
       <YearSelector
         value={String(parseYearAnchor(searchParams.get("start")))}
         startDate={firstWorkout}
@@ -48,27 +50,53 @@ const YearPage = () => {
         <div>{workouts.statistics.calories} ccal</div>
         <div>{workouts.totalElements} workouts</div>
       </div>
-      <div className="w-full mt-4 pr-2">
-        <WorkoutBarChart
-          payload={chartData}
-          onBarClick={setSelectedBar}
-          isYear
-          domain={[0, 720]}
-          ticks={ticks}
-          tickFormatter={(value: number) => minutesToHHMM(value)}
-        />
-      </div>
-      <div className="w-full mt-4 pr-2">
-        <WorkoutBarChart
-          payload={chartData}
-          onBarClick={setSelectedBar}
-          isYear
-          legendFormatter={(_value: string) => 'Calories'}
-          fillColor="#f54a00"
-          domain={[0, 8000]}
-          ticks={caloriesTicks}
-          dataKey="calories"
-        />
+      <div className="flex min-h-0 w-full flex-1 flex-col justify-evenly overflow-y-auto mb-8">
+        <div className="w-full mt-4 pr-2">
+          <WorkoutBarChart
+            payload={chartData}
+            onBarClick={setSelectedBar}
+            isYear
+            domain={[0, 720]}
+            ticks={ticks}
+            tickFormatter={(value: number) => minutesToHHMM(value)}
+          />
+        </div>
+        <div className="w-full mt-4 pr-2">
+          <WorkoutBarChart
+            payload={chartData}
+            onBarClick={setSelectedBar}
+            isYear
+            legendFormatter={(_value: string) => 'Calories'}
+            fillColor="#f54a00"
+            domain={[0, 8000]}
+            ticks={caloriesTicks}
+            dataKey="calories"
+          />
+        </div>
+        <div className="w-full mt-4 pr-2">
+          <WorkoutBarChart
+            payload={chartData}
+            onBarClick={setSelectedBar}
+            isYear
+            legendFormatter={(_value: string) => 'Workouts count'}
+            fillColor="#82ca9d"
+            domain={[0, 30]}
+            ticks={trainingsTicks}
+            dataKey="trainings"
+          />
+        </div>
+        <div className="w-full mt-4 pr-2">
+          <WorkoutBarChart
+            payload={chartData}
+            onBarClick={setSelectedBar}
+            isYear
+            legendFormatter={(_value: string) => 'Training load'}
+            fillColor="#f54a00"
+            domain={[15, 55]}
+            ticks={trainingLoadTicks}
+            dataKey="trainingLoad"
+          />
+        </div>
       </div>
     </div>
   );

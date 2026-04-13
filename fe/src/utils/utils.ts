@@ -32,6 +32,7 @@ export function formatYearlyChartData(payload: YearlyWorkoutType[]) {
 			value: workout.time,
 			calories: workout.calories,
 			trainings: workout.trainings,
+			trainingLoad: Math.round(workout.trainingLoad / workout.trainings),
 		})
 	})
 
