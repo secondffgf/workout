@@ -1,3 +1,5 @@
+import type { WorkoutType, YearlyWorkoutType } from "@/types"
+
 export function formatMonthlyChartData(payload: WorkoutType[]) {
    const shortLabel = payload.length > 12
    let chartData = payload.map((workout: WorkoutType) => {
@@ -20,4 +22,20 @@ export function formatMonthlyChartData(payload: WorkoutType[]) {
     chartData.sort((a: { date: string }, b: { date: string }) =>
         new Date(a.date).getTime() - new Date(b.date).getTime())
     return chartData
+}
+
+export function formatYearlyChartData(payload: YearlyWorkoutType[]) {
+	let chartData = payload.map(workout => {
+		return ({
+			date: workout.date,
+			label: workout.xaxisLabel,
+			value: workout.time,
+			calories: workout.calories,
+			trainings: workout.trainings,
+		})
+	})
+
+	chartData.sort((a: { date: string }, b: { date: string }) =>
+		new Date(a.date).getTime() - new Date(b.date).getTime())
+	return chartData
 }

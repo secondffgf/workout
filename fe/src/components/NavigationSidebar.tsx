@@ -26,8 +26,8 @@ export default function NavigationSidebar() {
   }
 
   return (
-    <>
-    <nav className="w-fit px-6 py-8 bg-sky-600 text-sky-50 rounded-r-xl flex flex-col my-auto mr-4 h-[90vh] z-10">
+    <div className="relative flex h-full min-h-0 flex-shrink-0 items-center">
+    <nav className="z-10 mr-4 flex h-[95vh] w-fit flex-shrink-0 flex-col rounded-r-xl bg-sky-600 px-6 py-8 text-sky-50">
 		  <h2 className="font-bold uppercase text-xl text-sky-200 flex items-center space-x-2">
 				<GrOverview />
 				<span>Dashboard</span>
@@ -60,9 +60,9 @@ export default function NavigationSidebar() {
 					className="flex items-center space-x-2"
 					children={({isActive}) => (
 						<>
-							<GiCalendarHalfYear className="text-red-500" />
-							<span className="text-red-500">Year</span>
-							{isActive ? <TiTickOutline className="text-red-500" /> : null}
+							<GiCalendarHalfYear className="text-white hover:text-sky-200" />
+							<span className="text-white hover:text-sky-200">Year</span>
+							{isActive ? <TiTickOutline className="text-white hover:text-sky-200" /> : null}
 						</>
 					)}
 				/>
@@ -164,6 +164,6 @@ export default function NavigationSidebar() {
         </aside>
       </>
     ) : null}
-    </>
+    </div>
   );
 };

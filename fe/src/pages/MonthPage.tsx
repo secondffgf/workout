@@ -35,7 +35,7 @@ const MonthPage = () => {
     }
   } | undefined = useContext(FirstWorkoutContext);
   const firstWorkout = firstWorkoutState?.state.firstWorkout || '';
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const workouts: WorkoutData = useLoaderData();
 
   const chartData = formatMonthlyChartData(workouts.content);
@@ -47,6 +47,7 @@ const MonthPage = () => {
   return (
     <div className="w-full flex flex-col items-center">
       <MonthSelector
+        value={normalizeStartOfPeriod(searchParams.get("start"))}
         onChange={(newMonth: string) => {
           setSearchParams((prevParams: URLSearchParams) => {
             const nextParams = new URLSearchParams(prevParams);

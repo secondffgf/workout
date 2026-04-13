@@ -2,6 +2,7 @@ import { Select } from "antd";
 
 type MonthSelectorProps = {
     startDate: string;
+    value: string;
     onChange: (newMonth: string) => void;
 };
 
@@ -42,18 +43,16 @@ const getMonthOptions = (startDate: string) => {
     return options.reverse();
 };
 
-const MonthSelector = ({ startDate, onChange }: MonthSelectorProps) => {
+const MonthSelector = ({ startDate, value, onChange }: MonthSelectorProps) => {
     const options = getMonthOptions(startDate);
-    const currentMonth = formatMonthValue(new Date());
 
     return (
         <div className="mb-4 mt-16 flex justify-center">
             <Select
                 style={{ width: 220 }}
                 options={options}
-                defaultValue={currentMonth}
-                onChange={(value) => onChange(value)}
-                
+                value={value}
+                onChange={(v) => onChange(v)}
             />
         </div>
     );

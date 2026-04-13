@@ -30,3 +30,27 @@ export function formatWeekPeriodRange(anchorInWeek: Date): string {
   const sunday = endOfIsoWeekSunday(monday);
   return `${formatDdMmYy(monday)} - ${formatDdMmYy(sunday)}`;
 }
+
+export function dateFromDdMmY(match: string): Date {
+  const parts = match.split(".");
+  if (parts.length === 3) {
+    const [day, month, year] = parts.map(Number);
+    return new Date(2000 + year, month - 1, day);
+  }
+  if (parts.length === 2) {
+    const [day, month] = parts.map(Number);
+    const year = new Date().getFullYear();
+    return new Date(year, month - 1, day);
+  }
+  return new Date();
+}
+
+export function parseWeekAnchor(startParam: string | null): Date {
+  if (!startParam) return new Date();
+  const trimmed = startParam.trim();
+  const m = trimmed.match(/^\d{1,2}\.\d{1,2}(\.\d{2})?/);
+  if (m) {
+    return dateFromDdMmY(m[0]);
+  }
+  return new Date(trimmed);
+}

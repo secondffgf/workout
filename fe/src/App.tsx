@@ -14,7 +14,7 @@ function App() {
 		<CurrentPeriodContextProvider>
 		<FirstWorkoutContextProvider>
 		<CalendarContextProvider>
-			<div className="flex-shrink-0 flex items-center">
+			<div className="flex min-h-0 flex-shrink-0 self-stretch">
 				<NavigationSidebar />
 			</div>
 			<div className="relative mr-4 flex min-h-0 w-[40rem] flex-1 flex-col">

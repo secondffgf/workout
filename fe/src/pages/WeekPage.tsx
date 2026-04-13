@@ -1,26 +1,23 @@
 import {
   formatWeekPeriodRange,
+  parseWeekAnchor,
 } from "@/utils/weekPeriodFormat";
+import { buildWeekSelectOptions, resolveSelectedWeekValue } from "@/utils/weekSelectorOptions";
+import { fetchFirstWorkoutDate } from "@/utils/http";
 import { useLoaderData, useSearchParams } from "react-router-dom";
-import type { WorkoutData } from "@/types";
+import type { WeekPageLoaderData } from "@/types";
 import { formatMonthlyChartData } from "@/utils/utils";
 import WorkoutDetail from "@/components/general/WorkoutDetail";
 import WorkoutBarChart from "@/components/general/UI/chart/WorkoutBarChart";
 import WeekSelector from "@/components/dashboard/WeekSelector";
-import { useContext } from "react";
-import { FirstWorkoutContext } from "@/context/FirstWorkoutContextProvider";
 
 const WeekPage = () => {
-  const firstWorkoutState:
-  {
-    state:{
-      firstWorkout: string;
-      error: string | null
-    }
-  } | undefined = useContext(FirstWorkoutContext);
-  const firstWorkout = firstWorkoutState?.state.firstWorkout || '';
   const [, setSearchParams] = useSearchParams();
-  const workouts: WorkoutData = useLoaderData();
+  const {
+    weekSelectOptions,
+    selectedWeekValue,
+    ...workouts
+  }: WeekPageLoaderData = useLoaderData();
 
   const chartData = formatMonthlyChartData(workouts.content);
 
@@ -31,7 +28,8 @@ const WeekPage = () => {
   return (
     <div className="w-full flex flex-col items-center">
       <WeekSelector
-        startDate={firstWorkout}
+        options={weekSelectOptions}
+        value={selectedWeekValue}
         onChange={(newWeek: string) => {
           setSearchParams((prevParams: URLSearchParams) => {
             const m = newWeek.match(/^\d{1,2}\.\d{1,2}(\.\d{2})?/);
@@ -68,49 +66,33 @@ const WeekPage = () => {
 
 export default WeekPage;
 
-function dateFromDdMmY(match: string) {
-  const parts = match.split(".");
-  if (parts.length === 3) {
-    const [day, month, year] = parts.map(Number);
-    return new Date(2000 + year, month - 1, day);
-  }
-  if (parts.length === 2) {
-    const [day, month] = parts.map(Number);
-    const year = new Date().getFullYear();
-    return new Date(year, month - 1, day);
-  }
-  return new Date();
-}
-
-const parseWeekAnchor = (startParam: string | null): Date => {
-  if (!startParam) return new Date();
-  const trimmed = startParam.trim();
-  // trimmed can be `dd.MM - dd.MM` or `dd.MM.yy - dd.MM.yy`
-  const m = trimmed.match(/^\d{1,2}\.\d{1,2}(\.\d{2})?/);
-  if (m) {
-    const startDate = dateFromDdMmY(m[0]);
-    return startDate;
-  }
-  return new Date(trimmed);
-}
-
 export async function loader(params: { request: Request }) {
   const url = new URL(params.request.url);
-  const startOfPeriod = formatWeekPeriodRange(
-    parseWeekAnchor(url.searchParams.get("start")),
-  );
-  const response = await fetch("/api/workouts", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      timePeriod: "WEEK",
-      startOfPeriod,
+  const searchStart = url.searchParams.get("start");
+  const startOfPeriod = formatWeekPeriodRange(parseWeekAnchor(searchStart));
+
+  const [{ firstDate: firstWorkoutDate }, response] = await Promise.all([
+    fetchFirstWorkoutDate(),
+    fetch("/api/workouts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        timePeriod: "WEEK",
+        startOfPeriod,
+      }),
     }),
-  });
+  ]);
 
   if (!response.ok) throw new Response("Not Found", { status: 404 });
 
-  return response.json();
+  const { weekOptions, selectOptions } = buildWeekSelectOptions(firstWorkoutDate);
+  const data = await response.json();
+
+  return {
+    ...data,
+    weekSelectOptions: selectOptions,
+    selectedWeekValue: resolveSelectedWeekValue(weekOptions, searchStart),
+  } satisfies WeekPageLoaderData;
 }

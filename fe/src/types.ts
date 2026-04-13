@@ -40,6 +40,15 @@ export type WorkoutType = {
   comment: any;
 }
 
+export type YearlyWorkoutType = {
+  date: string;
+  calories: number;
+  trainings: number;
+  time: number;
+  trainingLoad: number;
+  xaxisLabel: string;
+};
+
 export type WorkoutData = {
   statistics: {
     exerciseTime: string;
@@ -47,4 +56,20 @@ export type WorkoutData = {
   };
   content: WorkoutType[];
   totalElements: number;
+};
+
+export type YearlyWorkoutData = {
+  statistics: {
+    exerciseTime: string;
+    calories: number;
+  };
+  content: YearlyWorkoutType[];
+  totalElements: number;
+};
+
+export type WeekSelectOption = { value: string; label: string };
+
+export type WeekPageLoaderData = WorkoutData & {
+  weekSelectOptions: WeekSelectOption[];
+  selectedWeekValue: string;
 };
