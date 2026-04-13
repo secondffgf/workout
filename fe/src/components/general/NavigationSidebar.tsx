@@ -1,5 +1,4 @@
-import axios from 'axios'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
 	MdImageSearch,
@@ -15,7 +14,7 @@ import { PiCalendarSlash } from "react-icons/pi"
 import { TiTickOutline } from "react-icons/ti"
 import { GrOverview } from 'react-icons/gr'
 import Button from '@/components/general/UI/Button'
-import AdminPanelContent from './general/AdminPanelContent'
+import AdminPanelContent from '@/components/general/AdminPanelContent'
 import { RiCloseFill } from 'react-icons/ri'
 
 export default function NavigationSidebar() {
@@ -85,9 +84,9 @@ export default function NavigationSidebar() {
 					className="flex items-center space-x-2"
 					children={({isActive}) => (
 						<>
-							<MdImageSearch className="text-red-500" />
-							<span className="text-red-500">Search & Compare</span>
-							{isActive ? <TiTickOutline className="text-red-500" /> : null}
+							<MdImageSearch className="text-white hover:text-sky-200" />
+							<span className="text-white hover:text-sky-200">Search & Compare</span>
+							{isActive ? <TiTickOutline className="text-white hover:text-sky-200" /> : null}
 						</>
 					)}
 				/>

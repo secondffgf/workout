@@ -10,7 +10,7 @@ import YearPage, { loader as yearDataLoader } from './pages/YearPage.tsx';
 import AllPage, { loader as allDataLoader } from './pages/AllPage.tsx';
 import Favorite, { loader as favoriteLoader } from './pages/Favorite.tsx';
 import Flagged, { loader as flaggedLoader } from './pages/Flagged.tsx';
-import NewWorkoutPage, { loader as newWorkoutLoader } from './pages/new_workout/NewWorkoutPage.tsx';
+import NewWorkoutPage, { loader as exercisesLoader } from './pages/new_workout/NewWorkoutPage.tsx';
 import SearchAndCompare from './pages/SearchAndCompare.tsx';
 
 const router = createBrowserRouter([
@@ -39,10 +39,26 @@ const router = createBrowserRouter([
         element: <AllPage />,
         loader: allDataLoader,
       },
-      { path: 'favorite', element: <Favorite />, loader: favoriteLoader },
-      { path: 'flagged', element: <Flagged />, loader: flaggedLoader },
-      { path: 'add', element: <NewWorkoutPage />, loader: newWorkoutLoader },
-      { path: 'search', element: <SearchAndCompare /> },
+      {
+        path: 'favorite',
+        element: <Favorite />,
+        loader: favoriteLoader,
+      },
+      {
+        path: 'flagged',
+        element: <Flagged />,
+        loader: flaggedLoader,
+      },
+      {
+        path: 'add',
+        element: <NewWorkoutPage />,
+        loader: exercisesLoader,
+      },
+      {
+        path: 'search',
+        element: <SearchAndCompare />,
+        loader: exercisesLoader,
+      },
     ],
   },
 ]);

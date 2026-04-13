@@ -4,15 +4,15 @@ import { useLoaderData, useNavigate, type LoaderFunctionArgs } from "react-route
 import StepWorkoutMetrics from "./StepWorkoutMetrics";
 import StepExercises from "./StepExercises";
 import StepBasicInfo from "./StepBasicInfo";
-import type { NewWorkoutFormData, NewWorkoutLoaderData } from "../../types";
+import type { ExerciseNameOption, NewWorkoutFormData } from "../../types";
 import { format } from 'date-fns'
-import { addWorkout, fetchCalendarEvents, fetchWorkoutTemplate } from "@/utils/http";
+import { addWorkout, fetchWorkoutTemplate } from "@/utils/http";
 
 const steps = ["Workout Metrics", "Exercises", "Basic Info"];
 const currentDate = new Date().toISOString().split("T")[0];
 
 const NewWorkoutPage = () => {
-  const { exerciseOptions } = useLoaderData() as NewWorkoutLoaderData;
+  const exerciseOptions = useLoaderData() as ExerciseNameOption[];
   const { message } = App.useApp();
   const [templateDate, setTemplateDate] = useState(currentDate);
   const [currentStep, setCurrentStep] = useState(0);
@@ -226,7 +226,7 @@ export default NewWorkoutPage;
 
 export async function loader(
   _args: LoaderFunctionArgs,
-): Promise<NewWorkoutLoaderData> {
+): Promise<ExerciseNameOption[]> {
   const response = await fetch("/api/exercises", {
     method: "GET",
     headers: {
@@ -239,5 +239,5 @@ export async function loader(
     value,
     label,
   }));
-  return { exerciseOptions };
+  return exerciseOptions;
 }

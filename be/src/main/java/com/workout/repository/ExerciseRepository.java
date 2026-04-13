@@ -101,4 +101,21 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 		WHERE w.date = :workoutDate
 		""", nativeQuery = true)
 	List<WorkoutFullProjection> findWorkout(LocalDate workoutDate);
+
+
+    @Query(value = """
+		SELECT w.id as id, w.date as date,
+			w.exercise_time as exerciseTime,
+		    w.calories as calories, w.puls as puls,
+		    w.puls_max as maxPuls, w.intensive as intensive,
+		    w.aero as aerobish, anaero as anaerobish,
+			w.tl as trainingLoad, w.rounds as rounds,
+			w.comment as comment, e.weight as weight,
+			e.ex_order as order, n.value as name
+		FROM exercise e
+		LEFT JOIN workout w on e.workout_id = w.id
+		LEFT JOIN exercise_name n on e.name = n.id
+		WHERE e.workout_id in (:workoutIds)
+		""", nativeQuery = true)
+    List<WorkoutFullProjection> findWorkoutsByIds(List<UUID> workoutIds);
 }

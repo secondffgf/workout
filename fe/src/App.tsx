@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom';
-import NavigationSidebar from './components/NavigationSidebar';
-import WorkoutCalendar from './components/WorkoutCalendar';
-import CaloriesEstimateChart from './components/general/UI/chart/CaloriesEstimateChart';
-import ProgressBar from '@/components/ProgressBar'
+import NavigationSidebar from '@/components/general/NavigationSidebar';
+import WorkoutCalendar from '@/components/general/WorkoutCalendar';
+import CaloriesEstimateChart from '@/components/general/UI/chart/CaloriesEstimateChart';
+import ProgressBar from '@/components/general/UI/chart/ProgressBar'
 import { CalendarContextProvider } from '@/context/CalendarContextProvider';
 import { FirstWorkoutContextProvider } from '@/context/FirstWorkoutContextProvider';
 import { CurrentPeriodContextProvider } from '@/context/CurrentPeriodContextProvider';

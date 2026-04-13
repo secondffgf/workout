@@ -3,10 +3,6 @@ export type ExerciseNameOption = {
   label: string;
 };
 
-export type NewWorkoutLoaderData = {
-  exerciseOptions: ExerciseNameOption[];
-};
-
 export type NewWorkoutFormData = {
 // metrics    
     time: number;

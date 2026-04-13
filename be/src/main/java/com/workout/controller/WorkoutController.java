@@ -1,5 +1,7 @@
 package com.workout.controller;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,11 +109,12 @@ public class WorkoutController {
 	
 	@GetMapping("/search")
 	public List<SingleWorkoutModel> searchWorkouts(
-		@RequestParam(name = "name", required = false) String name,
-		@RequestParam(name = "weight", required = false) String weight,
-		@RequestParam(name = "calories", required = false) String calories
+		@RequestParam(name = "exercises", required = false) String exercises
 	) {
-		return workoutService.searchWorkouts(name, weight, calories);
+		if (exercises == null || exercises.trim().isEmpty()) {
+			return workoutService.searchWorkouts(Collections.emptyList());
+		}
+		return workoutService.searchWorkouts(Arrays.asList(exercises.split(",")));
 	}
 	
 	@GetMapping("/current_period")

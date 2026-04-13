@@ -99,12 +99,14 @@ public class WorkoutService {
 		return mapper.toCalendarEvents(events);
 	}
 
-	public List<SingleWorkoutModel> searchWorkouts(String name, String weight, String calories) {
-		List<WorkoutFullProjection> events = workoutRepository.searchWorkouts(
-			StringUtils.hasText(name) && !"null".equals(name) ? UUID.fromString(name) : null,
-			StringUtils.hasText(weight) ? Integer.parseInt(weight) : null,
-			StringUtils.hasText(calories) ? Integer.parseInt(calories) : null
-		);
+	public List<SingleWorkoutModel> searchWorkouts(List<String> exercises) {
+		List<UUID> workoutIds;
+		if (exercises.isEmpty()) {
+			workoutIds = workoutRepository.searchWorkoutIds(10);
+		} else {
+			workoutIds = workoutRepository.searchWorkoutIds(exercises, exercises.size(), 10);
+		}
+		List<WorkoutFullProjection> events = exerciseRepository.findWorkoutsByIds(workoutIds);
 		return singleWorkoutMapper.toModels(events);
 	}
 
