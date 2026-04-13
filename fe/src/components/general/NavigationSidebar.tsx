@@ -5,12 +5,10 @@ import {
 	MdFavoriteBorder,
 	MdOutlineAdminPanelSettings,
 	MdOutlineBookmarkAdd,
-	MdOutlineFlag,
 	MdOutlineCalendarViewWeek,
 	MdOutlineCalendarViewMonth
 } from 'react-icons/md'
 import { GiCalendarHalfYear } from "react-icons/gi"
-import { PiCalendarSlash } from "react-icons/pi"
 import { TiTickOutline } from "react-icons/ti"
 import { GrOverview } from 'react-icons/gr'
 import Button from '@/components/general/UI/Button'
@@ -26,11 +24,12 @@ export default function NavigationSidebar() {
 
   return (
     <div className="relative flex h-full min-h-0 flex-shrink-0 items-center">
-    <nav className="z-10 mr-4 flex h-[95vh] w-fit flex-shrink-0 flex-col rounded-r-xl bg-sky-600 px-6 py-8 text-sky-50">
-		  <h2 className="font-bold uppercase text-xl text-sky-200 flex items-center space-x-2">
+    <nav className="z-10 mr-4 flex h-[95vh] flex-shrink-0 flex-col rounded-r-xl bg-sky-600 px-6 py-8 text-sky-50 min-w-[230px]">
+		  <h2 className="font-bold uppercase text-xl text-sky-200 flex items-center space-x-2 mb-4">
 				<GrOverview />
 				<span>Dashboard</span>
 			</h2>
+			<hr />
 			<div className="flex flex-col mb-6 pl-6 gap-2 pt-4 text-lg text-white">
 				<NavLink
 					to="/week"
@@ -65,27 +64,16 @@ export default function NavigationSidebar() {
 						</>
 					)}
 				/>
-				<NavLink
-					to="/all"
-					className="flex items-center space-x-2"
-					children={({isActive}) => (
-						<>
-							<PiCalendarSlash className="text-red-500" />
-							<span className="text-red-500">All</span>
-							{isActive ? <TiTickOutline className="text-red-500" /> : null}
-						</>
-					)}
-				/>
 			</div>
 			<hr />
-			<div className="mt-4 mb-6 flex flex-col text-lg text-white w-full gap-2 pt-2 min-w-[200px]">
+			<div className="flex flex-col mb-6 pl-6 gap-2 pt-4 text-lg text-white">
 				<NavLink
 					to="/search"
 					className="flex items-center space-x-2"
 					children={({isActive}) => (
 						<>
 							<MdImageSearch className="text-white hover:text-sky-200" />
-							<span className="text-white hover:text-sky-200">Search & Compare</span>
+							<span className="text-white hover:text-sky-200">Search</span>
 							{isActive ? <TiTickOutline className="text-white hover:text-sky-200" /> : null}
 						</>
 					)}
@@ -96,18 +84,7 @@ export default function NavigationSidebar() {
 					children={({isActive}) => (
 						<>
 							<MdFavoriteBorder className="text-white hover:text-sky-200" />
-							<span className="text-white hover:text-sky-200">Favorite Workouts</span>
-							{isActive ? <TiTickOutline className="text-white hover:text-sky-200" /> : null}
-						</>
-					)}
-				/>
-				<NavLink
-					to="/flagged"
-					className="flex items-center space-x-2"
-					children={({isActive}) => (
-						<>
-							<MdOutlineFlag className="text-white hover:text-sky-200" />
-							<span className="text-white hover:text-sky-200">Flagged Workouts</span>
+							<span className="text-white hover:text-sky-200">Favorite</span>
 							{isActive ? <TiTickOutline className="text-white hover:text-sky-200" /> : null}
 						</>
 					)}
@@ -125,7 +102,7 @@ export default function NavigationSidebar() {
 				/>
 			</div>
 			<hr />
-			<div className="mt-4 flex justify-center mb-4">
+			<div className="mt-auto flex justify-center mb-4">
 				<Button
 					onClick={openPanel}
 					dark

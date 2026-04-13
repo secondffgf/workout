@@ -4,6 +4,8 @@ import { useLoaderData } from "react-router-dom";
 import type { ExerciseNameOption } from "@/types";
 import WorkoutDetail from "@/components/general/WorkoutDetail";
 import WorkoutPieChart from "@/components/general/UI/chart/WorkoutPieChart";
+import { BsFlagFill } from "react-icons/bs";
+import { MdSearch } from "react-icons/md";
 
 const SearchAndCompare = () => {
   const exerciseOptions = useLoaderData() as ExerciseNameOption[];
@@ -14,6 +16,12 @@ const SearchAndCompare = () => {
 
   const search = async () => {
     const response = await fetch(`/api/search?exercises=${selectedIds.join(',')}`);
+    const data = await response.json();
+    setWorkouts(data);
+  };
+
+  const showFlagged = async () => {
+    const response = await fetch(`/api/flagged`);
     const data = await response.json();
     setWorkouts(data);
   };
@@ -35,7 +43,7 @@ const SearchAndCompare = () => {
       <div className="w-full flex justify-evenly">
         <Select
           mode="multiple"
-          className="w-[40%] [&_.ant-select-selector]:border-slate-300"
+          className="w-[30%] [&_.ant-select-selector]:border-slate-300"
           value={selectedIds}
           onChange={setSelectedIds}
           options={exerciseOptions}
@@ -51,8 +59,17 @@ const SearchAndCompare = () => {
             return label.includes(q) || value.includes(q);
           }}
         />
-        <Button type="primary" onClick={() => void search()}>
+        <Button type="primary" onClick={search}>
+          <span className="text-white mr-2">
+            <MdSearch />
+          </span>
           <span className="text-white">Search</span>
+        </Button>
+        <Button type="default" onClick={showFlagged}>
+          <span className="text-red-600 mr-2">
+            <BsFlagFill />
+          </span>
+          <span className="text-sky-600">Show Flagged</span>
         </Button>
       </div>
       <div className="w-full mt-4 pr-2">
