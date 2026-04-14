@@ -1,5 +1,6 @@
 import YearSelector from "@/components/dashboard/YearSelector";
-import { useContext, useState } from "react";
+import { Tabs } from "antd";
+import { useContext, useMemo, useState } from "react";
 import { FirstWorkoutContext } from "@/context/FirstWorkoutContextProvider";
 import { useLoaderData, useSearchParams } from "react-router-dom";
 import type { YearlyWorkoutData } from "@/types";
@@ -32,6 +33,74 @@ const YearPage = () => {
 
   const chartData = formatYearlyChartData(workouts.content);
 
+  const chartTabs = useMemo(
+    () => [
+    {
+      key: "volume",
+      label: "Time & calories",
+      children: (
+        <div className="flex w-full flex-col gap-4 pt-2">
+          <div className="w-full pr-2">
+            <WorkoutBarChart
+              payload={chartData}
+              onBarClick={setSelectedBar}
+              isYear
+              domain={[0, 720]}
+              ticks={ticks}
+              tickFormatter={(value: number) => minutesToHHMM(value)}
+            />
+          </div>
+          <div className="w-full pr-2">
+            <WorkoutBarChart
+              payload={chartData}
+              onBarClick={setSelectedBar}
+              isYear
+              legendFormatter={(_value: string) => "Calories"}
+              fillColor="#f54a00"
+              domain={[0, 8000]}
+              ticks={caloriesTicks}
+              dataKey="calories"
+            />
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "sessions",
+      label: "Sessions & load",
+      children: (
+        <div className="flex w-full flex-col gap-4 pt-2">
+          <div className="w-full pr-2">
+            <WorkoutBarChart
+              payload={chartData}
+              onBarClick={setSelectedBar}
+              isYear
+              legendFormatter={(_value: string) => "Workouts count"}
+              fillColor="#82ca9d"
+              domain={[0, 30]}
+              ticks={trainingsTicks}
+              dataKey="trainings"
+            />
+          </div>
+          <div className="w-full pr-2">
+            <WorkoutBarChart
+              payload={chartData}
+              onBarClick={setSelectedBar}
+              isYear
+              legendFormatter={(_value: string) => "Training load"}
+              fillColor="#f54a00"
+              domain={[15, 55]}
+              ticks={trainingLoadTicks}
+              dataKey="trainingLoad"
+            />
+          </div>
+        </div>
+      ),
+    },
+  ],
+    [chartData],
+  );
+
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col items-center">
       <YearSelector
@@ -50,53 +119,12 @@ const YearPage = () => {
         <div>{workouts.statistics.calories} ccal</div>
         <div>{workouts.totalElements} workouts</div>
       </div>
-      <div className="flex min-h-0 w-full flex-1 flex-col justify-evenly overflow-y-auto mb-8">
-        <div className="w-full mt-4 pr-2">
-          <WorkoutBarChart
-            payload={chartData}
-            onBarClick={setSelectedBar}
-            isYear
-            domain={[0, 720]}
-            ticks={ticks}
-            tickFormatter={(value: number) => minutesToHHMM(value)}
-          />
-        </div>
-        <div className="w-full mt-4 pr-2">
-          <WorkoutBarChart
-            payload={chartData}
-            onBarClick={setSelectedBar}
-            isYear
-            legendFormatter={(_value: string) => 'Calories'}
-            fillColor="#f54a00"
-            domain={[0, 8000]}
-            ticks={caloriesTicks}
-            dataKey="calories"
-          />
-        </div>
-        <div className="w-full mt-4 pr-2">
-          <WorkoutBarChart
-            payload={chartData}
-            onBarClick={setSelectedBar}
-            isYear
-            legendFormatter={(_value: string) => 'Workouts count'}
-            fillColor="#82ca9d"
-            domain={[0, 30]}
-            ticks={trainingsTicks}
-            dataKey="trainings"
-          />
-        </div>
-        <div className="w-full mt-4 pr-2">
-          <WorkoutBarChart
-            payload={chartData}
-            onBarClick={setSelectedBar}
-            isYear
-            legendFormatter={(_value: string) => 'Training load'}
-            fillColor="#f54a00"
-            domain={[15, 55]}
-            ticks={trainingLoadTicks}
-            dataKey="trainingLoad"
-          />
-        </div>
+      <div className="mt-4 flex min-h-0 w-full flex-1 flex-col px-2 pb-8">
+        <Tabs
+          defaultActiveKey="volume"
+          items={chartTabs}
+          className="min-h-0 w-full flex-1"
+        />
       </div>
     </div>
   );
