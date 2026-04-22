@@ -41,7 +41,10 @@ function reducer(
 export const CurrentPeriodContext = createContext<{
 	state: CurrentPeriodState;
 	fetchCurrentPeriodWorkouts: () => void;
-} | undefined>(undefined);
+}>({
+	state: initialState,
+	fetchCurrentPeriodWorkouts: () => {}
+});
 
 export function CurrentPeriodContextProvider({children}: PropsWithChildren<{}>) {
 	const [state, dispatch] = useReducer(reducer, initialState)

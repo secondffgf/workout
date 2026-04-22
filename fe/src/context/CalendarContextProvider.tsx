@@ -40,7 +40,12 @@ function reducer(
 export const CalendarContext = createContext<{
 	state: CalendarState;
 	fetchEvents: (startDate: string, endDate: string) => Promise<void>;
-} | undefined>(undefined);
+	refreshEvents: () => Promise<void>;
+}>({
+	state: initialState,
+	fetchEvents: async () => {},
+	refreshEvents: async () => {}
+});
 
 export function CalendarContextProvider({children}: PropsWithChildren<{}>) {
 	const [state, dispatch] = useReducer(reducer, initialState)
@@ -64,10 +69,24 @@ export function CalendarContextProvider({children}: PropsWithChildren<{}>) {
 			type: 'FETCH_SUCCESS',
 			payload: result
 		}))
-	}, [])
+	}, []);
+
+	const refreshEvents = useCallback(async () => {
+		dispatch({ type: 'FETCH_START', startDate: state.startDate, endDate: state.endDate });
+
+		fetchCalendarEvents(state.startDate, state.endDate)
+		.catch((error: { message: any; }) => dispatch({
+			type: 'FETCH_FAILURE',
+			payload: (error.message || 'Failed to fetch calendar events!')
+		}))
+		.then((result: any) => dispatch({
+			type: 'FETCH_SUCCESS',
+			payload: result
+		}))
+	}, []);
 
 	return (
-		<CalendarContext value={{state, fetchEvents}}>
+		<CalendarContext value={{state, fetchEvents, refreshEvents}}>
 			{children}
 		</CalendarContext>
 	)

@@ -8,7 +8,8 @@ import MonthPage, { loader as monthDataLoader } from './pages/MonthPage.tsx';
 import WeekPage, { loader as weekDataLoader } from './pages/WeekPage.tsx';
 import YearPage, { loader as yearDataLoader } from './pages/YearPage.tsx';
 import Favorite, { loader as favoriteLoader } from './pages/Favorite.tsx';
-import NewWorkoutPage, { loader as exercisesLoader } from './pages/new_workout/NewWorkoutPage.tsx';
+import NewWorkoutPage from './pages/new_workout/NewWorkoutPage.tsx';
+import { exercisesLoader } from './pages/new_workout/exercisesLoader.ts';
 import SearchAndCompare from './pages/SearchAndCompare.tsx';
 
 const router = createBrowserRouter([

@@ -1,18 +1,21 @@
 import { App } from "antd";
-import { useState } from "react";
-import { useLoaderData, useNavigate, type LoaderFunctionArgs } from "react-router-dom";
+import { useContext, useState } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import StepWorkoutMetrics from "./StepWorkoutMetrics";
 import StepExercises from "./StepExercises";
 import StepBasicInfo from "./StepBasicInfo";
 import type { ExerciseNameOption, NewWorkoutFormData } from "../../types";
 import { format } from 'date-fns'
 import { addWorkout, fetchWorkoutTemplate } from "@/utils/http";
-
+import { CalendarContext } from "@/context/CalendarContextProvider";
+import { CurrentPeriodContext } from "@/context/CurrentPeriodContextProvider";
 const steps = ["Workout Metrics", "Exercises", "Basic Info"];
 const currentDate = new Date().toISOString().split("T")[0];
 
 const NewWorkoutPage = () => {
   const exerciseOptions = useLoaderData() as ExerciseNameOption[];
+  const { refreshEvents: refreshCalendarEvents } = useContext(CalendarContext);
+  const { fetchCurrentPeriodWorkouts } = useContext(CurrentPeriodContext);
   const { message } = App.useApp();
   const [templateDate, setTemplateDate] = useState(currentDate);
   const [currentStep, setCurrentStep] = useState(0);
@@ -54,7 +57,7 @@ const NewWorkoutPage = () => {
       );
     }
     if (currentStep === 1) {
-      return formData.exercises.length > 0 && formData.exercises.every((e) => e.exercise.trim() !== "" && e.weight > 0);
+      return formData.exercises.length > 0 && formData.exercises.every((e) => e.exercise.trim() !== "" && e.weight >= 0);
     }
     if (currentStep === 2) {
       return formData.date.trim() !== "" && formData.rounds.trim() !== "" && formData.comment.trim() !== "";
@@ -94,8 +97,8 @@ const NewWorkoutPage = () => {
     try {
       formData.exercises = formData.exercises.map((e, index) => ({ ...e, order: index + 1 }));
       await addWorkout(formData);
-      // TODO: refresh calendar events
-      // TODO: refresh charts
+      await refreshCalendarEvents();
+      await fetchCurrentPeriodWorkouts();
       message.success("Workout submitted");
       navigate("/month");
     } catch (error) {
@@ -223,21 +226,3 @@ const NewWorkoutPage = () => {
 };
 
 export default NewWorkoutPage;
-
-export async function loader(
-  _args: LoaderFunctionArgs,
-): Promise<ExerciseNameOption[]> {
-  const response = await fetch("/api/exercises", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  if (!response.ok) throw new Response("Not Found", { status: 404 });
-  const raw: {label: string, value: string}[] = await response.json();
-  const exerciseOptions = raw.map(({ label, value }) => ({
-    value,
-    label,
-  }));
-  return exerciseOptions;
-}
