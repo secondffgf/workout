@@ -10,16 +10,18 @@ import { addWorkout, fetchWorkoutTemplate } from "@/utils/http";
 import { CalendarContext } from "@/context/CalendarContextProvider";
 import { CurrentPeriodContext } from "@/context/CurrentPeriodContextProvider";
 const steps = ["Workout Metrics", "Exercises", "Basic Info"];
-const currentDate = new Date().toISOString().split("T")[0];
+
+const todayLocal = () => format(new Date(), "yyyy-MM-dd");
 
 const NewWorkoutPage = () => {
+  const currentDate = todayLocal();
   const exerciseOptions = useLoaderData() as ExerciseNameOption[];
   const { refreshEvents: refreshCalendarEvents } = useContext(CalendarContext);
   const { fetchCurrentPeriodWorkouts } = useContext(CurrentPeriodContext);
   const { message } = App.useApp();
   const [templateDate, setTemplateDate] = useState(currentDate);
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState<NewWorkoutFormData>({
+  const [formData, setFormData] = useState<NewWorkoutFormData>(() => ({
     time: 0,
     calories: 0,
     puls: 0,
@@ -32,7 +34,7 @@ const NewWorkoutPage = () => {
     date: currentDate,
     rounds: "",
     comment: "",
-  });
+  }));
 
   const navigate = useNavigate();
 
