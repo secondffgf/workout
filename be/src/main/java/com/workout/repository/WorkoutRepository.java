@@ -37,6 +37,7 @@ public interface WorkoutRepository extends JpaRepository<Workout, UUID> {
 		where n.value in (:exercises)
 		GROUP BY w.id, w.date
 		HAVING COUNT(DISTINCT n.value) = :exerciseCount
+		ORDER BY w.date DESC
 		LIMIT :limit;
 	""", nativeQuery = true)
 	List<UUID> searchWorkoutIds(List<String> exercises, int exerciseCount, int limit);

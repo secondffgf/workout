@@ -114,7 +114,11 @@ public class WorkoutController {
 		if (exercises == null || exercises.trim().isEmpty()) {
 			return workoutService.searchWorkouts(Collections.emptyList());
 		}
-		return workoutService.searchWorkouts(Arrays.asList(exercises.split(",")));
+		return workoutService.searchWorkouts(
+			Arrays.stream(exercises.split(","))
+				.map(String::trim)
+				.filter(s -> !s.isEmpty())
+				.toList());
 	}
 	
 	@GetMapping("/current_period")
