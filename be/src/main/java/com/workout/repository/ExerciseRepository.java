@@ -111,10 +111,15 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 		    w.aero as aerobish, anaero as anaerobish,
 			w.tl as trainingLoad, w.rounds as rounds,
 			w.comment as comment, e.weight as weight,
-			e.ex_order as order, n.value as name
+			e.ex_order as order, n.value as name,
+			CASE
+				WHEN f.id IS NOT NULL THEN true
+				ELSE false
+			END AS favorite
 		FROM exercise e
 		LEFT JOIN workout w on e.workout_id = w.id
 		LEFT JOIN exercise_name n on e.name = n.id
+		LEFT JOIN favorite f on f.workout = w.id
 		WHERE e.workout_id in (:workoutIds)
 		""", nativeQuery = true)
     List<WorkoutFullProjection> findWorkoutsByIds(List<UUID> workoutIds);
