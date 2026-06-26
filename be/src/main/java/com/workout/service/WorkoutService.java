@@ -99,10 +99,12 @@ public class WorkoutService {
 		return mapper.toCalendarEvents(events);
 	}
 
-	public List<SingleWorkoutModel> searchWorkouts(List<String> exercises) {
+	public List<SingleWorkoutModel> searchWorkouts(List<String> exercises, boolean onlySelected) {
 		List<UUID> workoutIds;
 		if (exercises.isEmpty()) {
 			workoutIds = workoutRepository.searchWorkoutIds(10);
+		} else if (onlySelected) {
+			workoutIds = workoutRepository.searchWorkoutIdsOnlySelected(exercises, exercises.size(), 10);
 		} else {
 			workoutIds = workoutRepository.searchWorkoutIds(exercises, exercises.size(), 10);
 		}

@@ -45,6 +45,19 @@ public interface WorkoutRepository extends JpaRepository<Workout, UUID> {
 	@Query(value = """
 		select w.id
 		from workout w
+		join exercise e on e.workout_id = w.id
+		join exercise_name n on e.name = n.id
+		group by w.id, w.date
+		having count(distinct n.value) = :exerciseCount
+		and count(distinct n.value) filter (where n.value in (:exercises)) = :exerciseCount
+		order by w.date desc
+		limit :limit;
+	""", nativeQuery = true)
+	List<UUID> searchWorkoutIdsOnlySelected(List<String> exercises, int exerciseCount, int limit);
+
+	@Query(value = """
+		select w.id
+		from workout w
 		order by w.date desc
 		LIMIT :limit;
 	""", nativeQuery = true)

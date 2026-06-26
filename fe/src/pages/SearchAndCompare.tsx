@@ -1,4 +1,4 @@
-import { Button, Select } from "antd";
+import { Button, Checkbox, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import type { ExerciseNameOption } from "@/types";
@@ -10,12 +10,21 @@ import { MdSearch } from "react-icons/md";
 const SearchAndCompare = () => {
   const exerciseOptions = useLoaderData() as ExerciseNameOption[];
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [onlySelected, setOnlySelected] = useState(false);
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [rightWorkout, setRightWorkout] = useState(null);
   const [leftWorkout, setLeftWorkout] = useState(null);
 
   const search = async () => {
-    const response = await fetch(`/api/search?exercises=${selectedIds.join(',')}`);
+    const params = new URLSearchParams();
+    if (selectedIds.length > 0) {
+      params.set("exercises", selectedIds.join(","));
+    }
+    if (onlySelected && selectedIds.length > 0) {
+      params.set("onlySelected", "true");
+    }
+    const query = params.toString();
+    const response = await fetch(`/api/search${query ? `?${query}` : ""}`);
     const data = await response.json();
     setWorkouts(data);
   };
@@ -59,6 +68,15 @@ const SearchAndCompare = () => {
             return label.includes(q) || value.includes(q);
           }}
         />
+        <div className="flex items-center">
+          <Checkbox
+            checked={onlySelected}
+            disabled={selectedIds.length === 0}
+            onChange={(e) => setOnlySelected(e.target.checked)}
+          >
+            Only selected
+          </Checkbox>
+        </div>
         <Button type="primary" onClick={search}>
           <span className="text-white mr-2">
             <MdSearch />

@@ -109,16 +109,18 @@ public class WorkoutController {
 	
 	@GetMapping("/search")
 	public List<SingleWorkoutModel> searchWorkouts(
-		@RequestParam(name = "exercises", required = false) String exercises
+		@RequestParam(name = "exercises", required = false) String exercises,
+		@RequestParam(name = "onlySelected", defaultValue = "false") boolean onlySelected
 	) {
 		if (exercises == null || exercises.trim().isEmpty()) {
-			return workoutService.searchWorkouts(Collections.emptyList());
+			return workoutService.searchWorkouts(Collections.emptyList(), false);
 		}
 		return workoutService.searchWorkouts(
 			Arrays.stream(exercises.split(","))
 				.map(String::trim)
 				.filter(s -> !s.isEmpty())
-				.toList());
+				.toList(),
+			onlySelected);
 	}
 	
 	@GetMapping("/current_period")
